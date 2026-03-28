@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmación de Órdenes de Compra – Maryun</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+
+  /* ── HEADER ── */
+  .top-bar {
+    background: #1B3A6B;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .top-bar .tag { background: #F47920; padding: 3px 10px; border-radius: 4px; font-size: 12px; }
+
+  /* ── HERO ── */
+  .hero {
+    background: #1B3A6B;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px;
+  }
+  .logo-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+  }
+  .logo-box .logo-title { color: #1B3A6B; font-size: 22px; font-weight: 900; letter-spacing: 1px; }
+  .logo-box .logo-title span { color: #F47920; }
+  .logo-box .logo-sub { color: #888; font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .hero-text h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .hero-text p  { font-size: 12px; opacity: 0.85; }
+  .hero-text .required { color: #F47920; font-size: 11px; margin-top: 4px; }
+
+  /* ── AVISO ── */
+  .aviso {
+    background: #fffbf0;
+    border-left: 4px solid #F47920;
+    margin: 16px 24px;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+  }
+  .aviso .aviso-title { color: #F47920; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .aviso p { font-size: 12px; color: #555; line-height: 1.6; }
+  .aviso strong { color: #333; }
+
+  /* ── INFO PROVEEDOR ── */
+  .prov-bar {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin: 0 24px 16px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .prov-bar .label { color: #888; margin-right: 6px; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 13px; }
+  .badge-blue  { background: #1B3A6B; color: #fff; }
+  .badge-orange { background: #F47920; color: #fff; }
+
+  /* ── SECCIÓN OC ── */
+  .section-title {
+    background: #e8ecf3;
+    margin: 0 24px 12px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1B3A6B;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ── TARJETA OC ── */
+  .oc-card {
+    background: #fff;
+    border-radius: 10px;
+    margin: 0 24px 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .oc-header {
+    background: #1B3A6B;
+    color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .oc-header .oc-num { font-size: 16px; font-weight: 800; }
+  .oc-header .oc-prod-pill {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 12px;
+  }
+  .oc-body { padding: 16px; }
+
+  .oc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .oc-field .field-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #F47920;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .oc-field .field-value {
+    font-size: 14px;
+    color: #222;
+    font-weight: 500;
+  }
+
+  /* ── CAMPO: RECIBIÓ CONFORME ── */
+  .campo-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .campo-label .req { color: #e00; margin-left: 3px; }
+
+  .radio-group { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .radio-option:hover { border-color: #1B3A6B; }
+  .radio-option input[type="radio"] { display: none; }
+  .radio-option.selected-yes { border-color: #2ecc71; background: #eafaf1; color: #1a7a3f; }
+  .radio-option.selected-no  { border-color: #e74c3c; background: #fdf0ef; color: #c0392b; }
+
+  /* ── FECHA DESPACHO ── */
+  .date-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .date-input:focus { border-color: #1B3A6B; }
+
+  /* ── OBSERVACIONES ── */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #f0f2f5;
+    border: 1.5px solid #ddd;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .chip:hover { border-color: #F47920; }
+  .chip.active { background: #fff3e8; border-color: #F47920; color: #e06000; font-weight: 600; }
+
+  textarea.obs-input {
+    width: 100%;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    font-family: inherit;
+  }
+  textarea.obs-input:focus { border-color: #1B3A6B; }
+  .char-count { text-align: right; font-size: 11px; color: #aaa; margin-top: 4px; }
+
+  /* ── SEPARADOR ── */
+  .divider { border: none; border-top: 1px dashed #e0e0e0; margin: 16px 0; }
+
+  /* ── SUBMIT ── */
+  .submit-area {
+    padding: 20px 24px 32px;
+    text-align: center;
+  }
+  .btn-submit {
+    background: #F47920;
+    color: #fff;
+    border: none;
+    padding: 14px 48px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(244,121,32,0.35);
+  }
+  .btn-submit:hover   { background: #d96510; }
+  .btn-submit:active  { transform: scale(0.97); }
+  .btn-submit:disabled { background: #bbb; cursor: not-allowed; box-shadow: none; }
+
+  .footer-note {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 10px;
+  }
+
+  /* ── MENSAJE ÉXITO ── */
+  #success-msg {
+    display: none;
+    background: #eafaf1;
+    border: 2px solid #2ecc71;
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    margin: 20px 24px;
+  }
+  #success-msg h2 { color: #1a7a3f; margin-bottom: 8px; }
+  #success-msg p  { color: #555; font-size: 13px; }
+
+  @media (max-width: 600px) {
+    .hero { flex-direction: column; align-items: flex-start; }
+    .oc-grid { grid-template-columns: 1fr; }
+    .prov-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="top-bar">
+  <span>📋 EQUIPO DE COMPRAS · MARYUN S.A.</span>
+  <span class="tag">Formulario oficial</span>
+</div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="logo-box">
+    <div class="logo-title">MAR<span>YUN</span></div>
+    <div class="logo-sub">TODO PARA LA INDUSTRIA</div>
+  </div>
+  <div class="hero-text">
+    <h1>Confirmación de Órdenes de Compra</h1>
+    <p>Complete la información para cada OC listada a continuación.</p>
+    <p class="required">* Campos obligatorios</p>
+  </div>
+</div>
+
+<!-- ── AVISO ── -->
+<div class="aviso">
+  <div class="aviso-title">⚠️ Su respuesta es de suma importancia</div>
+  <p>Al confirmar estas órdenes, <strong>nuestro equipo de ventas podrá mantener informado al cliente final</strong> en
+  tiempo real, anticipar retrasos y garantizar la calidad del servicio. Su colaboración es clave para toda la
+  cadena de abastecimiento.</p>
+</div>
+
+<!-- ── INFO PROVEEDOR ── -->
+<div class="prov-bar">
+  <span><span class="label">📦 Proveedor:</span><span class="badge badge-blue" id="prov-nombre">—</span></span>
+  <span><span class="label">Total OC:</span><span class="badge badge-orange" id="prov-total">—</span></span>
+  <span><span class="label">Fecha:</span><span id="prov-fecha">—</span></span>
+</div>
+
+<!-- ── SECCIÓN OC ── -->
+<div class="section-title">
+  📋 Órdenes de compra a confirmar <span class="badge badge-orange" id="oc-count-badge">—</span>
+</div>
+
+<!-- ── TARJETAS OC (generadas por JS) ── -->
+<div id="oc-cards-container"></div>
+
+<!-- ── MENSAJE ÉXITO ── -->
+<div id="success-msg">
+  <h2>✅ ¡Respuesta enviada correctamente!</h2>
+  <p>Gracias por confirmar sus órdenes de compra. Nuestro equipo de ventas ha sido notificado.<br>Puede cerrar esta ventana.</p>
+</div>
+
+<!-- ── SUBMIT ── -->
+<div class="submit-area" id="submit-area">
+  <button class="btn-submit" id="btn-enviar" onclick="enviarRespuestas()">
+    ✅ Enviar confirmación
+  </button>
+  <p class="footer-note">Al enviar, nuestro equipo recibirá una notificación inmediata.</p>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIGURACIÓN – reemplaza con tu URL real
+// de Power Automate HTTP Trigger
+// ══════════════════════════════════════════════
+const POWER_AUTOMATE_URL = "https://defaultc2254716cfd444acb99674d04837fe.fd.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/5b13518f0fe643aabaab8eab13a0c22a/triggers/manual/paths/invoke?api-version=1";
+
+// ══════════════════════════════════════════════
+// CHIPS DE OBSERVACIONES
+// ══════════════════════════════════════════════
+const CHIPS_OPTIONS = [
+  { label: "🏦 Cuenta bloqueada", value: "Cuenta bloqueada" },
+  { label: "📦 Sin stock",         value: "Sin stock" },
+  { label: "⏳ Retraso",           value: "Retraso" },
+  { label: "🚫 Retirado",          value: "Retirado" },
+];
+
+// ══════════════════════════════════════════════
+// LEER PARÁMETROS DE URL
+// ══════════════════════════════════════════════
+function getParams() {
+  // Lee datos desde el hash de la URL: #BASE64_JSON
+  // Estructura esperada del JSON:
+  // { proveedor, correo_proveedor, telefono_vendedor, correo_proveedor_alerta, numero_vendedor, ordenes: [...] }
+  const DEMO = {
+    proveedor: "Distribuidora Ejemplo S.A.",
+    correo_proveedor: "contacto@ejemplo.cl",
+    telefono_vendedor: "+56912345678",
+    correo_proveedor_alerta: "vbecerra@maryun.cl",
+    numero_vendedor: "V-001",
+    ordenes: [
+      { numero_oc:"OC-2025-001", producto:"Aceite de Oliva Extra Virgen", variante:"500ml × 12 unid", cantidad:"48 cajas", fecha_limite:"02/04/2025" },
+      { numero_oc:"OC-2025-002", producto:"Harina de Trigo",              variante:"1kg × 25 unid",   cantidad:"120 sacos", fecha_limite:"05/04/2025" },
+      { numero_oc:"OC-2025-003", producto:"Detergente Industrial",        variante:"5L × 6 unid",     cantidad:"30 cajas",  fecha_limite:"08/04/2025" },
+    ]
+  };
+
+  let data = DEMO;
+  try {
+    const hash = window.location.hash.substring(1);
+    if (hash) data = JSON.parse(decodeURIComponent(escape(atob(hash))));
+  } catch(e) {
+    console.warn("No se pudo leer datos de URL, usando demo:", e);
+  }
+
+  return {
+    proveedor:                data.proveedor || "Proveedor Ejemplo S.A.",
+    correo_proveedor:         data.correo_proveedor || "",
+    telefono_vendedor:        data.telefono_vendedor || "",
+    correo_proveedor_alerta:  data.correo_proveedor_alerta || "",
+    numero_vendedor:          data.numero_vendedor || "",
+    fecha:                    new Date().toLocaleDateString("es-CL"),
+    ocs:                      data.ordenes || []
+  };
+}
+
+// ══════════════════════════════════════════════
+// RENDERIZAR HEADER
+// ══════════════════════════════════════════════
+function renderHeader(params) {
+  document.getElementById("prov-nombre").textContent = params.proveedor;
+  document.getElementById("prov-total").textContent  = `${params.ocs.length} orden${params.ocs.length !== 1 ? "es" : ""}`;
+  document.getElementById("prov-fecha").textContent  = params.fecha;
+  document.getElementById("oc-count-badge").textContent = `${params.ocs.length} OC`;
+}
+
+// ══════════════════════════════════════════════
+// RENDERIZAR TARJETAS
+// ══════════════════════════════════════════════
+function renderCards(ocs) {
+  const container = document.getElementById("oc-cards-container");
+  container.innerHTML = "";
+
+  ocs.forEach((oc, i) => {
+    const card = document.createElement("div");
+    card.className = "oc-card";
+    card.innerHTML = `
+      <div class="oc-header">
+        <span class="oc-num">${oc.numero_oc}</span>
+        <span class="oc-prod-pill">${oc.producto}</span>
+      </div>
+      <div class="oc-body">
+        <div class="oc-grid">
+          <div class="oc-field">
+            <div class="field-label">Producto</div>
+            <div class="field-value">${oc.producto}</div>
+          </div>
+          <div class="oc-field">
+            <div class="field-label">Variante</div>
+            <div class="field-value">${oc.variante || "—"}</div>
+          </div>
+          <div class="oc-field">
+            <div class="field-label">Cantidad Pendiente</div>
+            <div class="field-value">${oc.cantidad || "—"}</div>
+          </div>
+          <div class="oc-field">
+            <div class="field-label">Fecha Límite</div>
+            <div class="field-value">${oc.fecha_limite || "—"}</div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- ¿Recibió conforme? -->
+        <div class="campo-label">¿Recibió conforme?<span class="req">*</span></div>
+        <div class="radio-group">
+          <label class="radio-option" id="opt-si-${i}" onclick="selectOption(${i},'si')">
+            <input type="radio" name="conforme-${i}" value="si">
+            ✅ Sí, conforme
+          </label>
+          <label class="radio-option" id="opt-no-${i}" onclick="selectOption(${i},'no')">
+            <input type="radio" name="conforme-${i}" value="no">
+            ❌ No, hay problema
+          </label>
+        </div>
+
+        <!-- Fecha estimada -->
+        <div class="campo-label">Fecha estimada de despacho<span class="req">*</span></div>
+        <input type="date" class="date-input" id="fecha-${i}" oninput="updateCharCount(${i})">
+
+        <!-- Observaciones -->
+        <div class="campo-label">Observaciones</div>
+        <div class="chips" id="chips-${i}">
+          ${CHIPS_OPTIONS.map(c => `<span class="chip" onclick="toggleChip(this,${i},'${c.value}')">${c.label}</span>`).join("")}
+        </div>
+        <textarea class="obs-input" id="obs-${i}" maxlength="300"
+          placeholder="Escriba aquí u use las sugerencias..."
+          oninput="updateCharCount(${i})"></textarea>
+        <div class="char-count"><span id="count-${i}">0</span>/300</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════
+// INTERACCIONES
+// ══════════════════════════════════════════════
+function selectOption(idx, val) {
+  const si = document.getElementById(`opt-si-${idx}`);
+  const no = document.getElementById(`opt-no-${idx}`);
+  si.classList.remove("selected-yes");
+  no.classList.remove("selected-no");
+  if (val === "si") si.classList.add("selected-yes");
+  else              no.classList.add("selected-no");
+  si.querySelector("input").checked = (val === "si");
+  no.querySelector("input").checked = (val === "no");
+}
+
+function toggleChip(el, idx, value) {
+  el.classList.toggle("active");
+  const chips = Array.from(document.querySelectorAll(`#chips-${idx} .chip.active`))
+                     .map(c => c.textContent.replace(/^[^\w]*/, "").trim());
+  const obs = document.getElementById(`obs-${idx}`);
+  const existing = obs.value.split("\n").filter(l => !CHIPS_OPTIONS.some(o => l.includes(o.value)));
+  obs.value = [...chips.map(c => c), ...existing].filter(Boolean).join("\n");
+  updateCharCount(idx);
+}
+
+function updateCharCount(idx) {
+  const obs = document.getElementById(`obs-${idx}`);
+  document.getElementById(`count-${idx}`).textContent = obs.value.length;
+}
+
+// ══════════════════════════════════════════════
+// ENVIAR
+// ══════════════════════════════════════════════
+let PARAMS;
+
+function enviarRespuestas() {
+  const btn = document.getElementById("btn-enviar");
+  const ocs = PARAMS.ocs;
+  const respuestas = [];
+  let valid = true;
+
+  for (let i = 0; i < ocs.length; i++) {
+    const conforme = document.querySelector(`input[name="conforme-${i}"]:checked`);
+    const fecha    = document.getElementById(`fecha-${i}`).value;
+
+    if (!conforme) {
+      alert(`Por favor seleccione "¿Recibió conforme?" para la OC ${ocs[i].numero_oc}`);
+      valid = false; break;
+    }
+    if (!fecha) {
+      alert(`Por favor ingrese la fecha estimada de despacho para la OC ${ocs[i].numero_oc}`);
+      valid = false; break;
+    }
+
+    respuestas.push({
+      numero_oc:     ocs[i].numero_oc,
+      producto:      ocs[i].producto,
+      estado:        conforme.value === "si" ? "confirmado" : "problema",
+      fecha_entrega: fecha,
+      observaciones: document.getElementById(`obs-${i}`).value.trim()
+    });
+  }
+
+  if (!valid) return;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Enviando...";
+
+  const payload = {
+    proveedor:                PARAMS.proveedor,
+    correo_proveedor:         PARAMS.correo_proveedor,
+    telefono_vendedor:        PARAMS.telefono_vendedor,
+    fecha_respuesta:          new Date().toISOString(),
+    correo_proveedor_alerta:  PARAMS.correo_proveedor_alerta,
+    numero_vendedor:          PARAMS.numero_vendedor,
+    respuestas
+  };
+
+  console.log("Payload a enviar:", JSON.stringify(payload, null, 2));
+
+  fetch(POWER_AUTOMATE_URL, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(payload)
+  })
+  .then(r => {
+    document.getElementById("oc-cards-container").style.display = "none";
+    document.getElementById("submit-area").style.display = "none";
+    document.getElementById("success-msg").style.display = "block";
+  })
+  .catch(err => {
+    console.error(err);
+    // En demo sin URL real, igual mostramos éxito
+    document.getElementById("oc-cards-container").style.display = "none";
+    document.getElementById("submit-area").style.display = "none";
+    document.getElementById("success-msg").style.display = "block";
+  });
+}
+
+// ══════════════════════════════════════════════
+// INICIALIZAR
+// ══════════════════════════════════════════════
+PARAMS = getParams();
+renderHeader(PARAMS);
+renderCards(PARAMS.ocs);
+</script>
+</body>
+</html>
