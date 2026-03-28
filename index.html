@@ -531,7 +531,7 @@ function enviarRespuestas() {
   console.log("Payload a enviar:", JSON.stringify(payload, null, 2));
 
   fetch(POWER_AUTOMATE_URL, {
-    method:  "POST",
+    method:  "no-cors",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify(payload)
   })
