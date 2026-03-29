@@ -339,11 +339,11 @@ const CHIPS_OPTIONS = [
 function getParams() {
   // Lee datos desde el hash de la URL: #BASE64_JSON
   // Estructura esperada del JSON:
-  // { proveedor, correo_proveedor, telefono_vendedor, correo_proveedor_alerta, numero_vendedor, ordenes: [...] }
+  // { proveedor, correo_proveedor, NUMERO_VENDEDOR, correo_proveedor_alerta, numero_vendedor, ordenes: [...] }
   const DEMO = {
     proveedor: "Distribuidora Ejemplo S.A.",
     correo_proveedor: "contacto@ejemplo.cl",
-    telefono_vendedor: "+56912345678",
+    NUMERO_VENDEDOR: "+56912345678",
     correo_proveedor_alerta: "vbecerra@maryun.cl",
     numero_vendedor: "V-001",
     ordenes: [
@@ -364,7 +364,7 @@ function getParams() {
   return {
     proveedor:                data.proveedor || "Proveedor Ejemplo S.A.",
     correo_proveedor:         data.correo_proveedor || "",
-    telefono_vendedor:        data.telefono_vendedor || "",
+   NUMERO_VENDEDOR:        data.NUMERO_VENDEDOR || "",
     correo_proveedor_alerta:  data.correo_proveedor_alerta || "",
     numero_vendedor:          data.numero_vendedor || "",
     fecha:                    new Date().toLocaleDateString("es-CL"),
