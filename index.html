@@ -518,15 +518,15 @@ function enviarRespuestas() {
   btn.disabled = true;
   btn.textContent = "⏳ Enviando...";
 
-  const payload = {
-    proveedor:                PARAMS.proveedor,
-    correo_proveedor:         PARAMS.correo_proveedor,
-    telefono_vendedor:        PARAMS.telefono_vendedor,
-    fecha_respuesta:          new Date().toISOString(),
-    correo_proveedor_alerta:  PARAMS.correo_proveedor_alerta,
-    numero_vendedor:          PARAMS.numero_vendedor,
-    respuestas
-  };
+const payload = {
+  proveedor:               PARAMS.proveedor,
+  correo_proveedor:        PARAMS.correo_proveedor,
+  telefono_vendedor:       PARAMS.NUMERO_VENDEDOR,
+  fecha_respuesta:         new Date().toISOString(),
+  correo_proveedor_alerta: PARAMS.correo_proveedor_alerta,
+  numero_vendedor:         PARAMS.numero_vendedor,
+  respuestas
+};
 
   console.log("Payload a enviar:", JSON.stringify(payload, null, 2));
 
