@@ -331,6 +331,7 @@ const CHIPS_OPTIONS = [
   { label: "📦 Sin stock",         value: "Sin stock" },
   { label: "⏳ Retraso",           value: "Retraso" },
   { label: "🚫 Retirado",          value: "Retirado" },
+  { label: "⚠️ Orden de compra errónea", value: "Orden de compra errónea" },
 ];
 
 // ══════════════════════════════════════════════
@@ -394,29 +395,9 @@ function renderCards(ocs) {
     card.className = "oc-card";
     card.innerHTML = `
       <div class="oc-header">
-        <span class="oc-num">${oc.numero_oc}</span>
-        <span class="oc-prod-pill">${oc.producto}</span>
+        <span class="oc-num">${oc.numero_oc}</span>
       </div>
       <div class="oc-body">
-        <div class="oc-grid">
-          <div class="oc-field">
-            <div class="field-label">Producto</div>
-            <div class="field-value">${oc.producto}</div>
-          </div>
-          <div class="oc-field">
-            <div class="field-label">Variante</div>
-            <div class="field-value">${oc.variante || "—"}</div>
-          </div>
-          <div class="oc-field">
-            <div class="field-label">Cantidad Pendiente</div>
-            <div class="field-value">${oc.cantidad || "—"}</div>
-          </div>
-          <div class="oc-field">
-            <div class="field-label">Fecha Límite</div>
-            <div class="field-value">${oc.fecha_limite || "—"}</div>
-          </div>
-        </div>
-
         <hr class="divider">
 
         <!-- ¿Recibió conforme? -->
@@ -473,6 +454,12 @@ function toggleChip(el, idx, value) {
   const existing = obs.value.split("\n").filter(l => !CHIPS_OPTIONS.some(o => l.includes(o.value)));
   obs.value = [...chips.map(c => c), ...existing].filter(Boolean).join("\n");
   updateCharCount(idx);
+  const SKIP_FECHA_CHIPS = ['Cuenta bloqueada', 'Sin stock'];
+  const skipFecha = chips.some(c => SKIP_FECHA_CHIPS.includes(c));
+  const fechaInput = document.getElementById();
+  fechaInput.disabled = skipFecha;
+  fechaInput.style.opacity = skipFecha ? '0.4' : '1';
+  if (skipFecha) fechaInput.value = '';
 }
 
 function updateCharCount(idx) {
@@ -499,8 +486,10 @@ function enviarRespuestas() {
       alert(`Por favor seleccione "¿Recibió conforme?" para la OC ${ocs[i].numero_oc}`);
       valid = false; break;
     }
-    if (!fecha) {
-      alert(`Por favor ingrese la fecha estimada de despacho para la OC ${ocs[i].numero_oc}`);
+    const obs_check = document.getElementById(`obs-${i}`).value.trim();
+    const SKIP_FECHA = ['Cuenta bloqueada', 'Sin stock'];
+    if (!fecha && !SKIP_FECHA.some(v => obs_check.includes(v))) {
+      alert('Por favor ingrese la fecha de despacho para la OC ' + ocs[i].numero_oc);
       valid = false; break;
     }
 
@@ -508,7 +497,7 @@ function enviarRespuestas() {
       numero_oc:     ocs[i].numero_oc,
       producto:      ocs[i].producto,
       estado:        conforme.value === "si" ? "confirmado" : "problema",
-      fecha_entrega: fecha,
+      fecha_entrega: fecha || 'Por definir',
       observaciones: document.getElementById(`obs-${i}`).value.trim()
     });
   }
