@@ -3,27 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#1B3A6B">
 <title>Confirmación de Órdenes de Compra – Maryun</title>
 <style>
+  /* ─────────────────────────────────────────────────────────────────────────
+     PALETA
+     El naranjo de marca #F47920 tiene 2,76:1 contra blanco: como FONDO con
+     texto blanco, o como TEXTO sobre blanco, incumple WCAG AA (4,5:1). Se
+     conserva íntegro donde es decorativo (bordes, filetes, marcas de foco) y
+     se usan dos derivados para lo que lleva texto. El logotipo mantiene
+     #F47920 exacto: WCAG 1.4.3 exime a los logotipos.
+     ───────────────────────────────────────────────────────────────────── */
+  :root {
+    --azul:          #1B3A6B;   /* 11,3:1 con blanco  */
+    --naranja:       #F47920;   /* decorativo, sin texto encima */
+    --naranja-txt:   #A34700;   /* texto naranjo sobre claro  — 5,7:1 */
+    --naranja-bg:    #C05600;   /* fondo con texto blanco     — 4,6:1 */
+    --naranja-bg-h:  #99450A;   /* el mismo, estado :hover */
+    --naranja-claro: #FFA45C;   /* texto naranjo sobre el azul — 6,2:1 */
+    --texto:         #2b2f36;
+    --gris-txt:      #5a6270;   /* texto atenuado — 6,1:1 con blanco */
+    --rojo:          #c0392b;
+    --borde:         #7b8190;   /* borde de control — 3,9:1 (WCAG 1.4.11) */
+    --borde-suave:   #dfe3e8;   /* filete decorativo */
+    --fondo:         #f0f2f5;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Foco visible SIEMPRE. El código anterior ponía `outline:none` en los
+     campos y solo cambiaba el color del borde: quien navega con teclado no
+     tenía forma de saber dónde estaba. */
+  :focus-visible,
+  .radio-option:focus-within,
+  .parcial-box:focus-within {
+    outline: 3px solid var(--azul);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 
   /* ── HEADER ── */
   .top-bar {
-    background: #1B3A6B;
+    background: var(--azul);
     color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     padding: 10px 20px;
     font-size: 13px;
     font-weight: 600;
   }
-  .top-bar .tag { background: #F47920; padding: 3px 10px; border-radius: 4px; font-size: 12px; }
+  .top-bar .tag { background: var(--naranja-bg); padding: 3px 10px; border-radius: 4px; font-size: 12px; }
 
   /* ── HERO ── */
   .hero {
-    background: #1B3A6B;
+    background: var(--azul);
     color: #fff;
     display: flex;
     align-items: center;
@@ -39,29 +88,43 @@
     align-items: center;
     min-width: 110px;
   }
-  .logo-box .logo-title { color: #1B3A6B; font-size: 22px; font-weight: 900; letter-spacing: 1px; }
+  .logo-box .logo-title { color: var(--azul); font-size: 22px; font-weight: 900; letter-spacing: 1px; }
   .logo-box .logo-title span { color: #F47920; }
-  .logo-box .logo-sub { color: #888; font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .logo-box .logo-sub { color: var(--gris-txt); font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; }
   .hero-text h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .hero-text p  { font-size: 12px; opacity: 0.85; }
-  .hero-text .required { color: #F47920; font-size: 11px; margin-top: 4px; }
+  .hero-text p  { font-size: 12.5px; color: #dfe6f2; }
+  .hero-text .required { color: var(--naranja-claro); font-size: 11.5px; margin-top: 4px; }
 
   /* ── AVISO ── */
   .aviso {
     background: #fffbf0;
-    border-left: 4px solid #F47920;
+    border-left: 4px solid var(--naranja);
     margin: 16px 24px;
     padding: 12px 16px;
     border-radius: 0 8px 8px 0;
   }
-  .aviso .aviso-title { color: #F47920; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
-  .aviso p { font-size: 12px; color: #555; line-height: 1.6; }
-  .aviso strong { color: #333; }
+  .aviso .aviso-title { color: var(--naranja-txt); font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .aviso p { font-size: 12.5px; color: #4a4f57; line-height: 1.6; }
+  .aviso strong { color: var(--texto); }
+
+  /* ── BANDA DE DEMOSTRACIÓN ── */
+  #demo-bar {
+    display: none;
+    background: #fff3e8;
+    border: 2px dashed var(--naranja);
+    color: var(--naranja-txt);
+    font-size: 12.5px;
+    font-weight: 700;
+    text-align: center;
+    margin: 16px 24px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
 
   /* ── INFO PROVEEDOR ── */
   .prov-bar {
     background: #fff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--borde-suave);
     border-radius: 8px;
     margin: 0 24px 16px;
     padding: 12px 16px;
@@ -71,10 +134,43 @@
     flex-wrap: wrap;
     font-size: 13px;
   }
-  .prov-bar .label { color: #888; margin-right: 6px; }
-  .badge { padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 13px; }
-  .badge-blue  { background: #1B3A6B; color: #fff; }
-  .badge-orange { background: #F47920; color: #fff; }
+  .prov-bar .label { color: var(--gris-txt); margin-right: 6px; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 13px; display: inline-block; }
+  .badge-blue   { background: var(--azul); color: #fff; }
+  .badge-orange { background: var(--naranja-bg); color: #fff; }
+  .badge-gray   { background: #4b5361; color: #fff; letter-spacing: 0.3px; }
+
+  /* ── CORREO DE CONTACTO (solo v2) ── */
+  .mail-box {
+    background: #fff;
+    border: 1px solid var(--borde-suave);
+    border-radius: 8px;
+    margin: 0 24px 16px;
+    padding: 12px 16px;
+  }
+  .mail-box label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #4a4f57;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .mail-box input {
+    width: 100%;
+    max-width: 360px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    font-size: 16px;           /* 16px o iOS hace zoom al enfocar */
+    font-family: inherit;
+    color: var(--texto);
+    background: #fff;
+    min-height: 44px;
+  }
+  .mail-box input:focus { border-color: var(--azul); }
+  .mail-box .sub { font-size: 12px; color: var(--gris-txt); margin-top: 5px; }
 
   /* ── SECCIÓN OC ── */
   .section-title {
@@ -84,10 +180,11 @@
     border-radius: 6px;
     font-weight: 700;
     font-size: 14px;
-    color: #1B3A6B;
+    color: var(--azul);
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
   }
 
   /* ── TARJETA OC ── */
@@ -99,20 +196,22 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .oc-header {
-    background: #1B3A6B;
+    background: var(--azul);
     color: #fff;
     padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
   }
   .oc-header .oc-num { font-size: 16px; font-weight: 800; }
   .oc-header .oc-prod-pill {
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.20);
+    border: 1px solid rgba(255,255,255,0.5);
     border-radius: 20px;
     padding: 3px 12px;
     font-size: 12px;
+    text-align: right;
   }
   .oc-body { padding: 16px; }
 
@@ -123,138 +222,256 @@
     margin-bottom: 16px;
   }
   .oc-field .field-label {
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 700;
-    color: #F47920;
+    color: var(--naranja-txt);
     letter-spacing: 0.8px;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
   .oc-field .field-value {
     font-size: 14px;
-    color: #222;
+    color: var(--texto);
     font-weight: 500;
+    word-break: break-word;
   }
 
-  /* ── CAMPO: RECIBIÓ CONFORME ── */
+  /* ── CAMPO: ESTADO ── */
   .campo-label {
-    font-size: 11px;
+    display: block;
+    font-size: 11.5px;
     font-weight: 700;
-    color: #555;
+    color: #4a4f57;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     margin-bottom: 8px;
   }
-  .campo-label .req { color: #e00; margin-left: 3px; }
+  .campo-label .req { color: var(--rojo); margin-left: 3px; }
 
   .radio-group { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
   .radio-option {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--borde);
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 10px 16px;
+    min-height: 44px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
     user-select: none;
   }
-  .radio-option:hover { border-color: #1B3A6B; }
-  .radio-option input[type="radio"] { display: none; }
-  .radio-option.selected-yes { border-color: #2ecc71; background: #eafaf1; color: #1a7a3f; }
-  .radio-option.selected-no  { border-color: #e74c3c; background: #fdf0ef; color: #c0392b; }
+  .radio-option:hover { border-color: var(--azul); }
+  /* El radio queda oculto a la vista pero NO al teclado ni al lector de
+     pantalla. `display:none` (versión anterior) lo sacaba del árbol de
+     accesibilidad y hacía el formulario inoperable sin ratón. */
+  .radio-option input[type="radio"] {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0; margin: 0; padding: 0; border: 0;
+    pointer-events: none;
+  }
+  .radio-option.selected-yes  { border-color: #1a7a3f; background: #eafaf1; color: #14622f; }
+  .radio-option.selected-no   { border-color: var(--rojo); background: #fdf0ef; color: #a5271b; }
+  .radio-option.selected-info { border-color: #1b5e8f; background: #eaf2fb; color: #164e77; }
+  .radio-option.selected-warn { border-color: var(--naranja-bg); background: #fff3e8; color: var(--naranja-txt); }
+  .radio-option.selected-gray { border-color: #4b5361; background: #eef0f4; color: #3c434f; }
 
   /* ── FECHA DESPACHO ── */
   .date-input {
     width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid #ccc;
+    padding: 11px 12px;
+    border: 1.5px solid var(--borde);
     border-radius: 8px;
-    font-size: 14px;
-    margin-bottom: 16px;
-    outline: none;
-    transition: border 0.2s;
+    font-size: 16px;           /* 16px o iOS hace zoom al enfocar */
+    font-family: inherit;
+    color: var(--texto);
+    background: #fff;
+    margin-bottom: 8px;
+    min-height: 44px;
   }
-  .date-input:focus { border-color: #1B3A6B; }
+  .date-input:focus { border-color: var(--azul); }
+  .date-input:disabled { background: #eceef1; color: #6b7280; cursor: not-allowed; }
+
+  .quick-dates { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .quick-date, .chip {
+    font-family: inherit;
+    font-size: 12.5px;
+    line-height: 1.2;
+    color: var(--texto);
+    padding: 9px 14px;
+    min-height: 36px;
+    border-radius: 20px;
+    background: #f0f2f5;
+    border: 1.5px solid var(--borde);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .quick-date:hover:not(:disabled) { border-color: var(--azul); color: var(--azul); }
+  .quick-date:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .hint { font-size: 12px; color: var(--gris-txt); margin: -4px 0 14px; }
+
+  /* ── PARCIAL (solo v2) ── */
+  .parcial-box {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: #fafbfc;
+    border: 1.5px dashed #b9c0ca;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  .parcial-box:hover { border-color: var(--naranja); }
+  .parcial-box input[type="checkbox"] { width: 20px; height: 20px; margin-top: 1px; flex: 0 0 auto; accent-color: var(--azul); }
+  .parcial-box .t { font-size: 12.5px; color: #4a4f57; line-height: 1.45; }
+  .parcial-box .t b { color: var(--texto); }
 
   /* ── OBSERVACIONES ── */
   .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-  .chip {
-    padding: 5px 12px;
-    border-radius: 20px;
-    background: #f0f2f5;
-    border: 1.5px solid #ddd;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
+  .chip:hover { border-color: var(--naranja); }
+  .chip[aria-pressed="true"] {
+    background: #fff3e8;
+    border-color: var(--naranja-bg);
+    color: var(--naranja-txt);
+    font-weight: 700;
   }
-  .chip:hover { border-color: #F47920; }
-  .chip.active { background: #fff3e8; border-color: #F47920; color: #e06000; font-weight: 600; }
 
   textarea.obs-input {
     width: 100%;
-    border: 1.5px solid #ccc;
+    border: 1.5px solid var(--borde);
     border-radius: 8px;
     padding: 10px 12px;
-    font-size: 13px;
+    font-size: 16px;           /* 16px o iOS hace zoom al enfocar */
+    color: var(--texto);
+    background: #fff;
     resize: vertical;
     min-height: 80px;
-    outline: none;
     font-family: inherit;
   }
-  textarea.obs-input:focus { border-color: #1B3A6B; }
-  .char-count { text-align: right; font-size: 11px; color: #aaa; margin-top: 4px; }
+  textarea.obs-input:focus { border-color: var(--azul); }
+  .char-count { text-align: right; font-size: 12px; color: var(--gris-txt); margin-top: 4px; }
 
   /* ── SEPARADOR ── */
-  .divider { border: none; border-top: 1px dashed #e0e0e0; margin: 16px 0; }
+  .divider { border: none; border-top: 1px dashed var(--borde-suave); margin: 16px 0; }
 
   /* ── SUBMIT ── */
-  .submit-area {
-    padding: 20px 24px 32px;
-    text-align: center;
-  }
+  .submit-area { padding: 20px 24px 32px; text-align: center; }
   .btn-submit {
-    background: #F47920;
+    background: var(--naranja-bg);
     color: #fff;
     border: none;
-    padding: 14px 48px;
+    padding: 15px 48px;
     border-radius: 8px;
     font-size: 16px;
+    font-family: inherit;
     font-weight: 700;
+    min-height: 48px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
-    box-shadow: 0 4px 12px rgba(244,121,32,0.35);
+    box-shadow: 0 4px 12px rgba(153,69,10,0.30);
   }
-  .btn-submit:hover   { background: #d96510; }
+  .btn-submit:hover:not(:disabled) { background: var(--naranja-bg-h); }
   .btn-submit:active  { transform: scale(0.97); }
-  .btn-submit:disabled { background: #bbb; cursor: not-allowed; box-shadow: none; }
+  .btn-submit:disabled { background: #6b7280; cursor: not-allowed; box-shadow: none; }
 
-  .footer-note {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 10px;
+  .footer-note { font-size: 12px; color: var(--gris-txt); margin-top: 10px; }
+
+  /* ── ERROR DE VALIDACIÓN EN TARJETA ── */
+  .campo-error {
+    display: none;
+    background: #fdf0ef;
+    border-left: 3px solid var(--rojo);
+    color: #a5271b;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 12px;
   }
 
   /* ── MENSAJE ÉXITO ── */
   #success-msg {
     display: none;
     background: #eafaf1;
-    border: 2px solid #2ecc71;
+    border: 2px solid #1a7a3f;
     border-radius: 10px;
     padding: 24px;
     text-align: center;
     margin: 20px 24px;
   }
-  #success-msg h2 { color: #1a7a3f; margin-bottom: 8px; }
-  #success-msg p  { color: #555; font-size: 13px; }
+  #success-msg:focus { outline: 3px solid var(--azul); outline-offset: 3px; }
+  #success-msg h2 { color: #14622f; margin-bottom: 8px; font-size: 19px; }
+  #success-msg p  { color: #40474f; font-size: 13.5px; line-height: 1.55; }
+  #deliv-note { font-size: 12.5px; color: #40474f; margin-top: 12px; line-height: 1.5; }
+  .btn-copy {
+    display: none;
+    margin: 12px auto 0;
+    background: #fff;
+    border: 1.5px solid var(--azul);
+    color: var(--azul);
+    border-radius: 8px;
+    padding: 11px 18px;
+    min-height: 44px;
+    font-size: 13.5px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-copy:hover { background: var(--azul); color: #fff; }
 
+  /* ── PANELES DE ERROR / ADVERTENCIA DE ENLACE ── */
+  #error-panel {
+    display: none;
+    background: #fdf0ef;
+    border: 2px solid var(--rojo);
+    border-radius: 10px;
+    padding: 22px;
+    margin: 20px 24px;
+  }
+  #error-panel h2 { color: #a5271b; font-size: 17px; margin-bottom: 8px; }
+  #error-panel p  { color: #40474f; font-size: 13.5px; line-height: 1.6; }
+
+  #warn-panel {
+    display: none;
+    background: #fff3e8;
+    border: 2px solid var(--naranja-bg);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 0 24px 16px;
+    color: var(--naranja-txt);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  /* ── MÓVIL ──
+     Los proveedores responden desde el teléfono: márgenes cortos, dos
+     columnas de estado, blancos de toque de 44 px y campos de 16 px. */
   @media (max-width: 600px) {
-    .hero { flex-direction: column; align-items: flex-start; }
+    .hero { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .top-bar { font-size: 11.5px; }
+    .aviso, .prov-bar, .mail-box, .section-title, .oc-card,
+    #success-msg, #error-panel, #warn-panel, #demo-bar { margin-left: 12px; margin-right: 12px; }
+    .submit-area { padding: 20px 12px 32px; }
     .oc-grid { grid-template-columns: 1fr; }
     .prov-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .oc-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .oc-header .oc-prod-pill { text-align: left; }
+    .radio-group { gap: 8px; }
+    .radio-option { flex: 1 1 calc(50% - 4px); justify-content: center; text-align: center; padding: 10px 8px; }
+    .quick-date, .chip { min-height: 44px; padding: 11px 14px; }
+    .btn-submit { width: 100%; padding: 16px 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
   }
 </style>
 </head>
@@ -267,7 +484,7 @@
 </div>
 
 <!-- ── HERO ── -->
-<div class="hero">
+<header class="hero">
   <div class="logo-box">
     <div class="logo-title">MAR<span>YUN</span></div>
     <div class="logo-sub">TODO PARA LA INDUSTRIA</div>
@@ -277,276 +494,992 @@
     <p>Complete la información para cada OC listada a continuación.</p>
     <p class="required">* Campos obligatorios</p>
   </div>
-</div>
+</header>
+
+<main>
+
+<!-- ── BANDA DE DEMOSTRACIÓN ── -->
+<div id="demo-bar">MODO DEMOSTRACIÓN · estos datos son de ejemplo, no corresponden a órdenes reales.</div>
 
 <!-- ── AVISO ── -->
-<div class="aviso">
+<div class="aviso" id="aviso">
   <div class="aviso-title">⚠️ Su respuesta es de suma importancia</div>
   <p>Al confirmar estas órdenes, <strong>nuestro equipo de ventas podrá mantener informado al cliente final</strong> en
   tiempo real, anticipar retrasos y garantizar la calidad del servicio. Su colaboración es clave para toda la
   cadena de abastecimiento.</p>
 </div>
 
+<!-- ── PANEL DE ERROR DE ENLACE ── -->
+<div id="error-panel" role="alert" tabindex="-1">
+  <h2>No pudimos leer este enlace</h2>
+  <p id="error-texto"></p>
+</div>
+
+<!-- ── PANEL DE ADVERTENCIA (órdenes omitidas) ── -->
+<div id="warn-panel" role="alert"></div>
+
 <!-- ── INFO PROVEEDOR ── -->
-<div class="prov-bar">
+<div class="prov-bar" id="prov-bar">
   <span><span class="label">📦 Proveedor:</span><span class="badge badge-blue" id="prov-nombre">—</span></span>
   <span><span class="label">Total OC:</span><span class="badge badge-orange" id="prov-total">—</span></span>
-  <span><span class="label">Fecha:</span><span id="prov-fecha">—</span></span>
+  <span><span class="label">Fecha de hoy:</span><span id="prov-fecha">—</span></span>
+  <span id="prov-seg-wrap" style="display:none"><span class="label">Folio:</span><span class="badge badge-gray" id="prov-seg">—</span></span>
+</div>
+
+<!-- ── CORREO DE CONTACTO (solo payload v2) ── -->
+<div class="mail-box" id="mail-box" style="display:none">
+  <label for="respondido-por">Su correo de contacto (opcional)</label>
+  <input type="email" id="respondido-por" placeholder="nombre@empresa.cl" autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="respondido-por-sub">
+  <div class="sub" id="respondido-por-sub">Lo usamos solo para responderle si necesitamos aclarar algo de estas órdenes.</div>
 </div>
 
 <!-- ── SECCIÓN OC ── -->
-<div class="section-title">
+<h2 class="section-title" id="section-title">
   📋 Órdenes de compra a confirmar <span class="badge badge-orange" id="oc-count-badge">—</span>
-</div>
+</h2>
 
 <!-- ── TARJETAS OC (generadas por JS) ── -->
 <div id="oc-cards-container"></div>
 
 <!-- ── MENSAJE ÉXITO ── -->
-<div id="success-msg">
+<div id="success-msg" role="status" tabindex="-1">
   <h2>✅ ¡Respuesta enviada correctamente!</h2>
   <p>Gracias por confirmar sus órdenes de compra. Nuestro equipo de ventas ha sido notificado.<br>Puede cerrar esta ventana.</p>
+  <p id="deliv-note"></p>
+  <button class="btn-copy" id="btn-copiar" type="button">📋 Copiar mi respuesta</button>
 </div>
 
 <!-- ── SUBMIT ── -->
 <div class="submit-area" id="submit-area">
-  <button class="btn-submit" id="btn-enviar" onclick="enviarRespuestas()">
+  <button class="btn-submit" id="btn-enviar" type="button">
     ✅ Enviar confirmación
   </button>
   <p class="footer-note">Al enviar, nuestro equipo recibirá una notificación inmediata.</p>
 </div>
 
+</main>
+
 <script>
-// ══════════════════════════════════════════════
-// CONFIGURACIÓN – reemplaza con tu URL real
-// de Power Automate HTTP Trigger
-// ══════════════════════════════════════════════
+"use strict";
+/* ══════════════════════════════════════════════════════════════════════════
+   Formulario de confirmación de OC — Maryun
+
+   Esta página es HTML estático servido por GitHub Pages: no tiene base de
+   datos y no consulta nada. TODO lo que muestra sale del hash de la URL.
+   Sin dependencias, sin CDN, sin fuentes remotas, sin analytics.
+
+   DOS CONTRATOS conviven aquí y el folio `seg` decide cuál rige:
+     · sin folio  → modo LEGADO. Interfaz «¿Recibió conforme? Sí/No» y cuerpo
+                    idéntico, clave por clave, al que el flujo en producción y
+                    el Excel Respuestas_OC.xlsx esperan hoy. NO TOCAR.
+     · con folio  → modo v2. Vocabulario de 4 estados, casilla `parcial` y
+                    `respondido_por`, hacia el flujo F10 del Servicio de
+                    Seguimiento.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1. DESTINOS — las DOS ÚNICAS URL a las que esta página puede postear.
+      Son constantes del código a propósito: la URL de destino NUNCA se lee
+      del payload. El payload viaja en el hash de una URL pública que
+      cualquiera puede fabricar; un `postUrl` en el payload convertiría esta
+      página en un recolector de datos de proveedores con la marca de Maryun.
+      ───────────────────────────────────────────────────────────────────── */
+
+/* Circuito LEGADO en producción (workflow 5b13518f…). URL con la firma
+   completa (sp / sv / sig), verificada con un POST real: responde HTTP 202.
+   NO TOCAR. */
 const POWER_AUTOMATE_URL = "https://defaultc2254716cfd444acb99674d04837fe.fd.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/5b13518f0fe643aabaab8eab13a0c22a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8Gx2EEd0rb7qDxU1o0UyXH9yqlpfKizSiSz37FyDm1I";
 
-// ══════════════════════════════════════════════
-// CHIPS DE OBSERVACIONES
-// ══════════════════════════════════════════════
-const CHIPS_OPTIONS = [
-  { label: "🏦 Cuenta bloqueada", value: "Cuenta bloqueada" },
-  { label: "📦 Sin stock",         value: "Sin stock" },
-  { label: "⏳ Retraso",           value: "Retraso" },
-  { label: "🚫 Retirado",          value: "Retirado" },
-  { label: "⚠️ Orden de compra errónea", value: "Orden de compra errónea" },
+/* Servicio de Seguimiento — flujo seg-F10-FormularioIngesta.
+   Pegar aquí la URL COMPLETA del trigger «Cuando se recibe una solicitud HTTP»
+   (incluye ?api-version=…&sp=…&sv=…&sig=…) cuando el flujo F10 exista.
+   Mientras esté vacía, la página NO postea nada del canal v2 y avisa al
+   proveedor que su respuesta no pudo confirmarse, ofreciéndole copiarla. */
+const URL_SEGUIMIENTO = "";
+
+/* Tope de espera de cada intento de envío. Sin él, una red que acepta la
+   conexión y nunca responde deja el botón en «Enviando…» para siempre. */
+const TIMEOUT_ENVIO_MS = 15000;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2. VOCABULARIOS
+      ───────────────────────────────────────────────────────────────────── */
+
+/* v2 — vocabulario CERRADO y compartido con la Adaptive Card de Teams.
+   `fecha`: 'req' obligatoria · 'opt' opcional · 'no' se bloquea. */
+const ESTADOS_V2 = [
+  { value: "Despachado",     label: "🚚 Despachado",      cls: "selected-yes",  fecha: "req" },
+  { value: "EnPreparacion",  label: "🏭 En preparación",  cls: "selected-info", fecha: "req" },
+  { value: "Retrasado",      label: "⏳ Retrasado",       cls: "selected-warn", fecha: "opt" },
+  { value: "SinInformacion", label: "❔ Sin información", cls: "selected-gray", fecha: "no"  }
 ];
 
-// ══════════════════════════════════════════════
-// LEER PARÁMETROS DE URL
-// ══════════════════════════════════════════════
-function getParams() {
-  // Lee datos desde el hash de la URL: #BASE64_JSON
-  // Estructura esperada del JSON:
-  // { proveedor, correo_proveedor, telefono_vendedor, correo_proveedor_alerta, numero_vendedor, ordenes: [...] }
-  const DEMO = {
-    proveedor: "Distribuidora Ejemplo S.A.",
-    correo_proveedor: "contacto@ejemplo.cl",
-    telefono_vendedor: "+56912345678",
-    correo_proveedor_alerta: "vbecerra@maryun.cl",
-    numero_vendedor: "V-001",
-    ordenes: [
-      { numero_oc:"OC-2025-001", producto:"Aceite de Oliva Extra Virgen", variante:"500ml × 12 unid", cantidad:"48 cajas", fecha_limite:"02/04/2025" },
-      { numero_oc:"OC-2025-002", producto:"Harina de Trigo",              variante:"1kg × 25 unid",   cantidad:"120 sacos", fecha_limite:"05/04/2025" },
-      { numero_oc:"OC-2025-003", producto:"Detergente Industrial",        variante:"5L × 6 unid",     cantidad:"30 cajas",  fecha_limite:"08/04/2025" },
-    ]
-  };
+/* LEGADO — exactamente las dos opciones y los dos valores de hoy. El valor
+   del radio ES el valor que va al campo `estado` del payload: reemplaza al
+   viejo `conforme.value === "si" ? "confirmado" : "problema"` sin cambiar
+   una coma de lo que recibe el flujo. */
+const ESTADOS_LEGADO = [
+  { value: "confirmado", label: "✅ Sí, conforme",     cls: "selected-yes", fecha: "req" },
+  { value: "problema",   label: "❌ No, hay problema", cls: "selected-no",  fecha: "req" }
+];
 
-  let data = DEMO;
-  try {
-    const hash = window.location.hash.substring(1);
-    if (hash) data = JSON.parse(decodeURIComponent(escape(atob(hash))));
-  } catch(e) {
-    console.warn("No se pudo leer datos de URL, usando demo:", e);
-  }
+const CHIPS_OPTIONS = [
+  { label: "🏦 Cuenta bloqueada",        value: "Cuenta bloqueada" },
+  { label: "📦 Sin stock",               value: "Sin stock" },
+  { label: "⏳ Retraso",                 value: "Retraso" },
+  { label: "🚫 Retirado",                value: "Retirado" },
+  { label: "⚠️ Orden de compra errónea", value: "Orden de compra errónea" }
+];
 
-  return {
-    proveedor:                data.proveedor || "Proveedor Ejemplo S.A.",
-    correo_proveedor:         data.correo_proveedor || "",
-    telefono_vendedor:        data.telefono_vendedor || "",
-    correo_vendedor:          data.correo_vendedor || "",
-    correo_proveedor_alerta:  data.correo_proveedor_alerta || "",
-    numero_vendedor:          data.numero_vendedor || "",
-    fecha:                    new Date().toLocaleDateString("es-CL"),
-    ocs:                      data.ordenes || []
-  };
-}
+/* Regla del circuito legado: con la cuenta bloqueada o sin stock el proveedor
+   no puede comprometer una fecha, así que el campo se bloquea y deja de ser
+   obligatorio. En v2 esto lo resuelve el propio vocabulario de estados
+   («Sin información» ya trae fecha:'no'), y por eso la regla NO se aplica
+   allí: el contrato v2 exige fecha cuando el estado es Despachado o En
+   preparación, y una regla cruzada la dejaría en blanco. */
+const SKIP_FECHA_CHIPS = ["Cuenta bloqueada", "Sin stock"];
 
-// ══════════════════════════════════════════════
-// RENDERIZAR HEADER
-// ══════════════════════════════════════════════
-function renderHeader(params) {
-  document.getElementById("prov-nombre").textContent = params.proveedor;
-  document.getElementById("prov-total").textContent  = `${params.ocs.length} orden${params.ocs.length !== 1 ? "es" : ""}`;
-  document.getElementById("prov-fecha").textContent  = params.fecha;
-  document.getElementById("oc-count-badge").textContent = `${params.ocs.length} OC`;
-}
+const ATAJOS_FECHA = [
+  { label: "Hoy",       dias: 0 },
+  { label: "Mañana",    dias: 1 },
+  { label: "+3 días",   dias: 3 },
+  { label: "+1 semana", dias: 7 }
+];
 
-// ══════════════════════════════════════════════
-// RENDERIZAR TARJETAS
-// ══════════════════════════════════════════════
-function renderCards(ocs) {
-  const container = document.getElementById("oc-cards-container");
-  container.innerHTML = "";
+const SEG_RE = /^SEG-\d{4}-\d{5}$/;
+const MAX_OBS = 300;
 
-  ocs.forEach((oc, i) => {
-    const card = document.createElement("div");
-    card.className = "oc-card";
-    card.innerHTML = `
-      <div class="oc-header">
-        <span class="oc-num">${oc.numero_oc}</span>
-      </div>
-      <div class="oc-body">
-        <hr class="divider">
-
-        <!-- ¿Recibió conforme? -->
-        <div class="campo-label">¿Recibió conforme?<span class="req">*</span></div>
-        <div class="radio-group">
-          <label class="radio-option" id="opt-si-${i}" onclick="selectOption(${i},'si')">
-            <input type="radio" name="conforme-${i}" value="si">
-            ✅ Sí, conforme
-          </label>
-          <label class="radio-option" id="opt-no-${i}" onclick="selectOption(${i},'no')">
-            <input type="radio" name="conforme-${i}" value="no">
-            ❌ No, hay problema
-          </label>
-        </div>
-
-        <!-- Fecha estimada -->
-        <div class="campo-label">Fecha estimada de despacho<span class="req">*</span></div>
-        <input type="date" class="date-input" id="fecha-${i}" oninput="updateCharCount(${i})">
-
-        <!-- Observaciones -->
-        <div class="campo-label">Observaciones</div>
-        <div class="chips" id="chips-${i}">
-          ${CHIPS_OPTIONS.map(c => `<span class="chip" onclick="toggleChip(this,${i},'${c.value}')">${c.label}</span>`).join("")}
-        </div>
-        <textarea class="obs-input" id="obs-${i}" maxlength="300"
-          placeholder="Escriba aquí u use las sugerencias..."
-          oninput="updateCharCount(${i})"></textarea>
-        <div class="char-count"><span id="count-${i}">0</span>/300</div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-// ══════════════════════════════════════════════
-// INTERACCIONES
-// ══════════════════════════════════════════════
-function selectOption(idx, val) {
-  const si = document.getElementById(`opt-si-${idx}`);
-  const no = document.getElementById(`opt-no-${idx}`);
-  si.classList.remove("selected-yes");
-  no.classList.remove("selected-no");
-  if (val === "si") si.classList.add("selected-yes");
-  else              no.classList.add("selected-no");
-  si.querySelector("input").checked = (val === "si");
-  no.querySelector("input").checked = (val === "no");
-}
-
-function toggleChip(el, idx, value) {
-  el.classList.toggle("active");
-  const chips = Array.from(document.querySelectorAll(`#chips-${idx} .chip.active`))
-                     .map(c => c.textContent.replace(/^[^\w]*/, "").trim());
-  const obs = document.getElementById(`obs-${idx}`);
-  const existing = obs.value.split("\n").filter(l => !CHIPS_OPTIONS.some(o => l.includes(o.value)));
-  obs.value = [...chips.map(c => c), ...existing].filter(Boolean).join("\n");
-  updateCharCount(idx);
-  const SKIP_FECHA_CHIPS = ['Cuenta bloqueada', 'Sin stock'];
-  const skipFecha = chips.some(c => SKIP_FECHA_CHIPS.includes(c));
-  const fechaInput = document.getElementById();
-  fechaInput.disabled = skipFecha;
-  fechaInput.style.opacity = skipFecha ? '0.4' : '1';
-  if (skipFecha) fechaInput.value = '';
-}
-
-function updateCharCount(idx) {
-  const obs = document.getElementById(`obs-${idx}`);
-  document.getElementById(`count-${idx}`).textContent = obs.value.length;
-}
-
-// ══════════════════════════════════════════════
-// ENVIAR
-// ══════════════════════════════════════════════
-let PARAMS;
-
-function enviarRespuestas() {
-  const btn = document.getElementById("btn-enviar");
-  const ocs = PARAMS.ocs;
-  const respuestas = [];
-  let valid = true;
-
-  for (let i = 0; i < ocs.length; i++) {
-    const conforme = document.querySelector(`input[name="conforme-${i}"]:checked`);
-    const fecha    = document.getElementById(`fecha-${i}`).value;
-
-    if (!conforme) {
-      alert(`Por favor seleccione "¿Recibió conforme?" para la OC ${ocs[i].numero_oc}`);
-      valid = false; break;
-    }
-    const obs_check = document.getElementById(`obs-${i}`).value.trim();
-    const SKIP_FECHA = ['Cuenta bloqueada', 'Sin stock'];
-    if (!fecha && !SKIP_FECHA.some(v => obs_check.includes(v))) {
-      alert('Por favor ingrese la fecha de despacho para la OC ' + ocs[i].numero_oc);
-      valid = false; break;
-    }
-
-    respuestas.push({
-      numero_oc:     ocs[i].numero_oc,
-      producto:      ocs[i].producto,
-      estado:        conforme.value === "si" ? "confirmado" : "problema",
-      fecha_entrega: fecha || 'Por definir',
-      observaciones: document.getElementById(`obs-${i}`).value.trim()
-    });
-  }
-
-  if (!valid) return;
-
-  btn.disabled = true;
-  btn.textContent = "⏳ Enviando...";
-
-const payload = {
-  proveedor:               PARAMS.proveedor,
-  correo_proveedor:        PARAMS.correo_proveedor,
-  telefono_vendedor:       PARAMS.telefono_vendedor,
-  correo_vendedor:         PARAMS.correo_vendedor,
-  fecha_respuesta:         new Date().toISOString(),
-  correo_proveedor_alerta: PARAMS.correo_proveedor_alerta,
-  numero_vendedor:         PARAMS.numero_vendedor,
-  respuestas
+const DEMO = {
+  v: 2,
+  seg: "SEG-2026-00214",
+  proveedor: "Distribuidora Ejemplo S.A.",
+  correo_proveedor: "contacto@ejemplo.cl",
+  telefono_vendedor: "+56912345678",
+  correo_vendedor: "vbecerra@maryun.cl",
+  correo_proveedor_alerta: "vbecerra@maryun.cl",
+  numero_vendedor: "V-001",
+  ordenes: [
+    { numero_oc: "45830", producto: "Cabo PP 16 mm x 220 m", variante: "", cantidad: "40 rollos", fecha_limite: "08-08-2026" },
+    { numero_oc: "45770", producto: "Boya EVA 300 mm",       variante: "", cantidad: "200 un",    fecha_limite: "15-08-2026" },
+    { numero_oc: "45901", producto: "Red de contención 4 m", variante: "", cantidad: "12 un",     fecha_limite: "22-08-2026" }
+  ]
 };
 
-  console.log("Payload a enviar:", JSON.stringify(payload, null, 2));
+/* ─────────────────────────────────────────────────────────────────────────
+   3. LECTURA DEL HASH
+      ───────────────────────────────────────────────────────────────────── */
 
-  fetch(POWER_AUTOMATE_URL, {
-    method:  "POST",
-    mode:    "no-cors",
-    headers: { "Content-Type": "text/plain" },
-    body:    JSON.stringify(payload)
-  })
-  .then(r => {
-    document.getElementById("oc-cards-container").style.display = "none";
-    document.getElementById("submit-area").style.display = "none";
-    document.getElementById("success-msg").style.display = "block";
-  })
-  .catch(err => {
-    console.error(err);
-    // En demo sin URL real, igual mostramos éxito
-    document.getElementById("oc-cards-container").style.display = "none";
-    document.getElementById("submit-area").style.display = "none";
-    document.getElementById("success-msg").style.display = "block";
+/* base64 → texto UTF-8. Reemplaza al viejo `decodeURIComponent(escape(atob(h)))`:
+   `escape` está obsoleto y rompe con caracteres fuera de Latin-1 (la «ñ» y las
+   tildes salían mal). Además tolera base64url (- _), relleno faltante y hashes
+   que el cliente de correo dejó percent-encoded. */
+function decodificarBase64Utf8(b64) {
+  var s = String(b64).replace(/\s+/g, "");
+  if (/%[0-9A-Fa-f]{2}/.test(s)) { try { s = decodeURIComponent(s); } catch (e) { /* se usa tal cual */ } }
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  s = s.replace(/=+$/, "");
+  if (s.length % 4 === 1) { throw new Error("Longitud de base64 inválida."); }
+  while (s.length % 4 !== 0) { s += "="; }
+  var bin = atob(s);
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) { bytes[i] = bin.charCodeAt(i); }
+  if (typeof TextDecoder !== "undefined") {
+    /* `fatal:true` para que un base64 que decodifica a bytes que NO son UTF-8
+       (hash truncado a la mitad de un carácter multibyte) caiga al panel de
+       error en vez de pintar «Distribuidora Espa�ola» al proveedor. */
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  }
+  var pct = "";
+  for (var j = 0; j < bytes.length; j++) { pct += "%" + ("0" + bytes[j].toString(16)).slice(-2); }
+  return decodeURIComponent(pct);
+}
+
+function esEntornoDePrueba() {
+  return location.protocol === "file:" ||
+         location.hostname === "localhost" ||
+         location.hostname === "127.0.0.1" ||
+         /(^|[?&])demo=1(&|$)/.test(location.search);
+}
+
+/* Devuelve { origen: 'hash' | 'demo' | 'sin-hash' | 'error', data } */
+function leerPayload() {
+  var hash = window.location.hash ? window.location.hash.substring(1) : "";
+  if (!hash) {
+    /* Sin hash: demo SOLO en entorno de prueba. En producción un enlace sin
+       hash es un enlace cortado por el cliente de correo, y mostrar datos de
+       demostración al proveedor sería peor que no mostrar nada. */
+    return esEntornoDePrueba() ? { origen: "demo", data: DEMO } : { origen: "sin-hash", data: null };
+  }
+  try {
+    var obj = JSON.parse(decodificarBase64Utf8(hash));
+    if (!obj || typeof obj !== "object" || Array.isArray(obj)) { throw new Error("El payload no es un objeto JSON."); }
+    return { origen: "hash", data: obj };
+  } catch (e) {
+    console.error("No se pudo leer el payload del enlace:", e);
+    return { origen: "error", data: null };
+  }
+}
+
+function texto(v, max) {
+  if (v === null || v === undefined) { return ""; }
+  if (typeof v === "object") { return ""; }
+  var s = String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim();
+  if (max && s.length > max) { s = s.substring(0, max); }
+  return s;
+}
+
+/* Normalización de entrada: acepta las DOS formas de payload.
+   - v2  : { v:2, seg, proveedor, ordenes:[ {numero_oc, …} ] }
+   - v1  : { proveedor, …, ordenes:[ {…} ] }  ó  { proveedor, ocs:["45830", …] }
+   El folio válido es lo que decide el modo y el destino del POST. */
+function normalizar(data) {
+  var brutas = [];
+  if (Array.isArray(data.ordenes))  { brutas = data.ordenes; }
+  else if (Array.isArray(data.ocs)) { brutas = data.ocs; }
+
+  var ordenes = [];
+  var omitidas = 0;
+  for (var i = 0; i < brutas.length; i++) {
+    var o = brutas[i];
+    if (o === null || o === undefined) { omitidas++; continue; }
+    var fila;
+    if (typeof o === "string" || typeof o === "number") {
+      fila = { numero_oc: texto(o, 40), producto: "", variante: "", cantidad: "", fecha_limite: "" };
+    } else {
+      fila = {
+        numero_oc:    texto(o.numero_oc, 40),
+        producto:     texto(o.producto, 200),
+        variante:     texto(o.variante, 120),
+        cantidad:     texto(o.cantidad, 60),
+        fecha_limite: texto(o.fecha_limite, 20)
+      };
+    }
+    /* Una OC sin número no se puede correlacionar del otro lado. Se descarta,
+       pero NUNCA en silencio: se cuenta y se avisa en pantalla. Perder una
+       orden sin decirlo es peor que no tenerla. */
+    if (fila.numero_oc === "") { omitidas++; continue; }
+    ordenes.push(fila);
+  }
+
+  var segCrudo = texto(data.seg, 20);
+  var seg = SEG_RE.test(segCrudo) ? segCrudo : "";
+  if (segCrudo && !seg) { console.warn("El folio del payload no cumple el patrón SEG-AAAA-NNNNN y se ignora:", segCrudo); }
+
+  return {
+    modo:  seg ? "v2" : "legado",
+    seg:   seg,
+    /* El texto de respaldo del proveedor es el mismo de siempre: el cuerpo
+       legado tiene que salir idéntico también en el caso degenerado. */
+    proveedor:               texto(data.proveedor, 120) || "Proveedor Ejemplo S.A.",
+    correo_proveedor:        texto(data.correo_proveedor, 120),
+    telefono_vendedor:       texto(data.telefono_vendedor, 40),
+    correo_vendedor:         texto(data.correo_vendedor, 120),
+    correo_proveedor_alerta: texto(data.correo_proveedor_alerta, 120),
+    numero_vendedor:         texto(data.numero_vendedor, 40),
+    fecha:                   new Date().toLocaleDateString("es-CL"),
+    ordenes:                 ordenes,
+    omitidas:                omitidas,
+    recibidas:               brutas.length
+  };
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   4. RENDER — todo con createElement + textContent.
+      Ni un solo valor del payload entra por innerHTML: el hash es público y
+      fabricable, y una interpolación en innerHTML permitiría inyectar HTML y
+      script en una página con la identidad visual de Maryun.
+      ───────────────────────────────────────────────────────────────────── */
+
+function nodo(tag, clase, txt) {
+  var n = document.createElement(tag);
+  if (clase) { n.className = clase; }
+  if (txt !== undefined && txt !== null && txt !== "") { n.textContent = txt; }
+  return n;
+}
+
+function campo(etiqueta, valor) {
+  var w = nodo("div", "oc-field");
+  w.appendChild(nodo("div", "field-label", etiqueta));
+  w.appendChild(nodo("div", "field-value", valor));
+  return w;
+}
+
+function ocultar(id) {
+  var el = document.getElementById(id);
+  if (el) { el.style.display = "none"; }
+}
+
+function mostrarError(titulo, mensaje) {
+  var panel = document.getElementById("error-panel");
+  panel.style.display = "block";
+  panel.querySelector("h2").textContent = titulo;
+  document.getElementById("error-texto").textContent = mensaje;
+  ocultar("prov-bar");
+  ocultar("mail-box");
+  ocultar("section-title");
+  ocultar("submit-area");
+  ocultar("aviso");
+  try { panel.focus(); } catch (e) { /* sin foco programático */ }
+}
+
+function renderHeader(p) {
+  var n = p.ordenes.length;
+  document.getElementById("prov-nombre").textContent = p.proveedor;
+  document.getElementById("prov-total").textContent  = n + (n === 1 ? " orden" : " órdenes");
+  document.getElementById("prov-fecha").textContent  = p.fecha;
+  document.getElementById("oc-count-badge").textContent = n + " OC";
+  if (p.seg) {
+    document.getElementById("prov-seg-wrap").style.display = "";
+    document.getElementById("prov-seg").textContent = p.seg;
+  }
+  if (p.modo === "v2") { document.getElementById("mail-box").style.display = "block"; }
+
+  if (p.omitidas > 0) {
+    var w = document.getElementById("warn-panel");
+    w.textContent = "⚠️ El enlace traía " + p.recibidas + " línea(s) y " + p.omitidas +
+      " no se pudo(pudieron) mostrar porque venía(n) sin número de OC. Revise el correo: " +
+      "la tabla del mensaje trae el detalle completo, y puede responder por ese medio.";
+    w.style.display = "block";
+  }
+}
+
+/* Registro de tarjetas: guarda REFERENCIAS a los elementos, no ids armados
+   con plantillas de cadena. Elimina de raíz la clase de fallas por
+   getElementById con un id compuesto que no existe o que se repite (el código
+   anterior llamaba a `document.getElementById()` sin argumento y la regla de
+   fecha opcional nunca llegaba a ejecutarse). */
+var CARDS = [];
+
+function fechaLocalISO(d) {
+  var mm = ("0" + (d.getMonth() + 1)).slice(-2);
+  var dd = ("0" + d.getDate()).slice(-2);
+  return d.getFullYear() + "-" + mm + "-" + dd;
+}
+
+function renderCards(p) {
+  var cont = document.getElementById("oc-cards-container");
+  cont.innerHTML = "";
+  CARDS = [];
+  var estados = (p.modo === "v2") ? ESTADOS_V2 : ESTADOS_LEGADO;
+
+  p.ordenes.forEach(function (oc, i) {
+    var c = { oc: oc, estado: "", estadoDef: null, chipSinFecha: false,
+              radios: [], fecha: null, reqFecha: null, hintFecha: null,
+              atajos: [], parcial: null, obs: null, contador: null, error: null };
+
+    var card = nodo("section", "oc-card");
+    card.setAttribute("aria-label", "Orden de compra " + oc.numero_oc);
+
+    /* — Cabecera — */
+    var head = nodo("div", "oc-header");
+    head.appendChild(nodo("h3", "oc-num", oc.numero_oc));
+    if (oc.producto) { head.appendChild(nodo("span", "oc-prod-pill", oc.producto)); }
+    card.appendChild(head);
+
+    var body = nodo("div", "oc-body");
+
+    /* — Datos de la OC — solo los campos que traen valor. Los payloads del
+       circuito legado llegan sin producto/variante/cantidad y la versión en
+       producción ya había quitado esa rejilla para no mostrar cuatro casillas
+       vacías; aquí se decide fila por fila y sirve a los dos contratos. */
+    var grid = nodo("div", "oc-grid");
+    if (oc.producto)     { grid.appendChild(campo("Producto", oc.producto)); }
+    if (oc.variante)     { grid.appendChild(campo("Variante", oc.variante)); }
+    if (oc.cantidad)     { grid.appendChild(campo("Cantidad pendiente", oc.cantidad)); }
+    if (oc.fecha_limite) { grid.appendChild(campo("Fecha comprometida", oc.fecha_limite)); }
+    if (grid.childNodes.length > 0) { body.appendChild(grid); }
+    body.appendChild(nodo("hr", "divider"));
+
+    /* — Mensaje de validación de esta tarjeta — */
+    var err = nodo("div", "campo-error");
+    err.id = "error-oc-" + i;
+    err.setAttribute("role", "alert");
+    body.appendChild(err);
+    c.error = err;
+
+    /* — Estado — */
+    var lblEstado = nodo("div", "campo-label", (p.modo === "v2") ? "Estado de esta orden" : "¿Recibió conforme?");
+    lblEstado.id = "lbl-estado-" + i;
+    lblEstado.appendChild(nodo("span", "req", "*"));
+    body.appendChild(lblEstado);
+
+    var grupo = nodo("div", "radio-group");
+    grupo.setAttribute("role", "radiogroup");
+    grupo.setAttribute("aria-labelledby", "lbl-estado-" + i);
+    grupo.setAttribute("aria-required", "true");
+    estados.forEach(function (est, j) {
+      var idRadio = "estado-" + i + "-" + j;
+      var lab = nodo("label", "radio-option");
+      lab.htmlFor = idRadio;
+      var inp = document.createElement("input");
+      inp.type = "radio";
+      inp.id = idRadio;
+      inp.name = "estado-" + i;
+      inp.value = est.value;
+      inp.required = true;
+      /* `change`, no `click` en la etiqueta: el clic en una <label> se
+         reenvía al input y volvía a burbujear, disparando el manejador dos
+         veces; y con `change` también funcionan las flechas del teclado. */
+      inp.addEventListener("change", function () { seleccionarEstado(c, est); });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(est.label));
+      grupo.appendChild(lab);
+      c.radios.push({ el: lab, input: inp, def: est });
+    });
+    body.appendChild(grupo);
+
+    /* — Fecha estimada — */
+    var idFecha = "fecha-" + i;
+    var lblFecha = nodo("label", "campo-label", "Fecha estimada de despacho");
+    lblFecha.htmlFor = idFecha;
+    var reqFecha = nodo("span", "req", "*");
+    lblFecha.appendChild(reqFecha);
+    body.appendChild(lblFecha);
+
+    var inpFecha = document.createElement("input");
+    inpFecha.type = "date";
+    inpFecha.id = idFecha;
+    inpFecha.className = "date-input";
+    /* Respaldo para navegadores sin `type=date` (Safari antiguo): el campo se
+       degrada a texto y el proveedor necesita saber qué formato escribir. */
+    inpFecha.placeholder = "aaaa-mm-dd";
+    inpFecha.addEventListener("input", function () { limpiarError(c); });
+    body.appendChild(inpFecha);
+    c.fecha = inpFecha;
+    c.reqFecha = reqFecha;
+
+    var atajos = nodo("div", "quick-dates");
+    atajos.setAttribute("aria-label", "Atajos de fecha para la OC " + oc.numero_oc);
+    ATAJOS_FECHA.forEach(function (a) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "quick-date";
+      b.textContent = a.label;
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () {
+        if (c.fecha.disabled) { return; }
+        var d = new Date();
+        d.setDate(d.getDate() + a.dias);
+        c.fecha.value = fechaLocalISO(d);
+        c.atajos.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        limpiarError(c);
+      });
+      atajos.appendChild(b);
+      c.atajos.push(b);
+    });
+    body.appendChild(atajos);
+
+    if (p.modo === "v2") {
+      c.hintFecha = nodo("div", "hint", "Obligatoria si la orden está despachada o en preparación.");
+      c.hintFecha.id = "hint-fecha-" + i;
+      body.appendChild(c.hintFecha);
+      inpFecha.setAttribute("aria-describedby", c.hintFecha.id);
+
+      /* — Parcial (regla B1) — */
+      var idParcial = "parcial-" + i;
+      var caja = nodo("label", "parcial-box");
+      caja.htmlFor = idParcial;
+      var chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.id = idParcial;
+      caja.appendChild(chk);
+      /* <span>, no <div>: el modelo de contenido de <label> es contenido de
+         frase; un <div> adentro es HTML inválido. */
+      var t = nodo("span", "t");
+      t.style.display = "block";
+      var b1 = document.createElement("b");
+      b1.textContent = "Esta respuesta cubre solo parte de los productos de esta OC";
+      t.appendChild(b1);
+      t.appendChild(document.createElement("br"));
+      t.appendChild(document.createTextNode("Márquela si informó de algunos productos y de otros todavía no. Dejamos la orden abierta y le volvemos a preguntar por el saldo."));
+      caja.appendChild(t);
+      body.appendChild(caja);
+      c.parcial = chk;
+    } else {
+      c.hintFecha = nodo("div", "hint", "Con «Cuenta bloqueada» o «Sin stock» puede dejarla en blanco.");
+      c.hintFecha.id = "hint-fecha-" + i;
+      body.appendChild(c.hintFecha);
+      inpFecha.setAttribute("aria-describedby", c.hintFecha.id);
+    }
+
+    /* — Observaciones — */
+    var idObs = "obs-" + i;
+    var lblObs = nodo("label", "campo-label", "Observaciones");
+    lblObs.htmlFor = idObs;
+    body.appendChild(lblObs);
+
+    var chips = nodo("div", "chips");
+    chips.setAttribute("aria-label", "Observaciones frecuentes para la OC " + oc.numero_oc);
+    CHIPS_OPTIONS.forEach(function (ch) {
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "chip";
+      el.textContent = ch.label;
+      el.setAttribute("aria-pressed", "false");
+      el.addEventListener("click", function () { alternarChip(c, el, ch.value); });
+      chips.appendChild(el);
+    });
+    body.appendChild(chips);
+
+    var ta = document.createElement("textarea");
+    ta.id = idObs;
+    ta.className = "obs-input";
+    ta.maxLength = MAX_OBS;
+    ta.rows = 3;
+    ta.placeholder = "Escriba aquí o use las sugerencias…";
+    ta.setAttribute("aria-describedby", "cc-" + i);
+    ta.addEventListener("input", function () { actualizarContador(c); });
+    body.appendChild(ta);
+    c.obs = ta;
+
+    var cc = nodo("div", "char-count");
+    cc.id = "cc-" + i;
+    var spanCount = nodo("span", null, "0");
+    cc.appendChild(spanCount);
+    cc.appendChild(document.createTextNode("/" + MAX_OBS + " caracteres"));
+    body.appendChild(cc);
+    c.contador = spanCount;
+
+    card.appendChild(body);
+    cont.appendChild(card);
+    CARDS.push(c);
   });
 }
 
-// ══════════════════════════════════════════════
-// INICIALIZAR
-// ══════════════════════════════════════════════
-PARAMS = getParams();
-renderHeader(PARAMS);
-renderCards(PARAMS.ocs);
+/* ─────────────────────────────────────────────────────────────────────────
+   5. INTERACCIONES
+      ───────────────────────────────────────────────────────────────────── */
+
+/* Único punto que decide si la fecha va bloqueada. Dos fuentes pueden pedirlo
+   —el estado en v2, los chips en el legado— y antes cada una pisaba a la otra. */
+function aplicarReglaFecha(c) {
+  var def = c.estadoDef;
+  var porEstado = !!(def && def.fecha === "no");
+  var porChip   = (PARAMS && PARAMS.modo === "legado" && c.chipSinFecha === true);
+  var bloquear  = porEstado || porChip;
+
+  c.fecha.disabled = bloquear;
+  if (bloquear) { c.fecha.value = ""; }
+  c.atajos.forEach(function (b) {
+    b.disabled = bloquear;
+    if (bloquear) { b.setAttribute("aria-pressed", "false"); }
+  });
+  c.reqFecha.textContent = (!bloquear && (!def || def.fecha === "req")) ? "*" : "";
+
+  if (c.hintFecha) {
+    if (porChip) {
+      c.hintFecha.textContent = "No es obligatoria con «Cuenta bloqueada» o «Sin stock»: la registramos como «Por definir».";
+    } else if (!def) {
+      c.hintFecha.textContent = (PARAMS && PARAMS.modo === "v2")
+        ? "Obligatoria si la orden está despachada o en preparación."
+        : "Con «Cuenta bloqueada» o «Sin stock» puede dejarla en blanco.";
+    } else if (def.fecha === "req") {
+      c.hintFecha.textContent = "Obligatoria para este estado.";
+    } else if (def.fecha === "opt") {
+      c.hintFecha.textContent = "Opcional: si todavía no tiene fecha, déjela en blanco y cuéntenos en observaciones.";
+    } else {
+      c.hintFecha.textContent = "No aplica: nos avisará cuando tenga información.";
+    }
+  }
+}
+
+function seleccionarEstado(c, est) {
+  c.estado = est.value;
+  c.estadoDef = est;
+  c.radios.forEach(function (r) {
+    r.el.classList.remove("selected-yes", "selected-no", "selected-info", "selected-warn", "selected-gray");
+    r.input.checked = (r.def.value === est.value);
+    if (r.def.value === est.value) { r.el.classList.add(est.cls); }
+  });
+  aplicarReglaFecha(c);
+  limpiarError(c);
+}
+
+/* Los chips escriben y BORRAN su propia línea, comparando contra el valor
+   declarado del chip. La versión anterior reconstruía el texto desde
+   `textContent` y descartaba cualquier línea del proveedor que contuviera una
+   palabra de chip: escribir «no hay retraso» hacía desaparecer esa línea. */
+function alternarChip(c, el, valor) {
+  var activo = (el.getAttribute("aria-pressed") !== "true");
+  var lineas = c.obs.value.split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+  var idx = lineas.indexOf(valor);
+  if (activo) {
+    if (idx === -1) {
+      /* Si no cabe, no se agrega a medias: una línea truncada ya no coincide
+         con el valor del chip y después no habría forma de quitarla. */
+      var largo = lineas.join("\n").length;
+      if (largo + valor.length + (lineas.length ? 1 : 0) > MAX_OBS) {
+        avisar("No queda espacio en las observaciones de la OC " + c.oc.numero_oc +
+               " (máximo " + MAX_OBS + " caracteres).", c.obs, c);
+        return;
+      }
+      lineas.unshift(valor);
+    }
+  } else if (idx !== -1) {
+    lineas.splice(idx, 1);
+  }
+  el.setAttribute("aria-pressed", activo ? "true" : "false");
+  c.obs.value = lineas.join("\n");
+  actualizarContador(c);
+
+  /* Regla legada de fecha opcional: se evalúa sobre el texto real de las
+     observaciones, igual que la validación del envío. */
+  c.chipSinFecha = SKIP_FECHA_CHIPS.some(function (v) { return c.obs.value.indexOf(v) !== -1; });
+  aplicarReglaFecha(c);
+}
+
+function actualizarContador(c) {
+  c.contador.textContent = String(c.obs.value.length);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. VALIDACIÓN Y ARMADO DEL PAYLOAD DE VUELTA
+      ───────────────────────────────────────────────────────────────────── */
+
+function limpiarError(c) {
+  if (c && c.error) { c.error.textContent = ""; c.error.style.display = "none"; }
+}
+
+/* Mensaje en la propia tarjeta (visible, anunciado por `role="alert"`) más el
+   `alert()` de siempre como red: en móvil el desplazamiento a veces deja el
+   mensaje fuera de la vista, y el diálogo del navegador no se puede ignorar. */
+function avisar(mensaje, elemento, c) {
+  if (c && c.error) {
+    c.error.textContent = mensaje;
+    c.error.style.display = "block";
+  }
+  if (elemento) {
+    try { elemento.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { elemento.scrollIntoView(); }
+  }
+  alert(mensaje);
+  if (elemento) {
+    try { elemento.focus({ preventScroll: true }); } catch (e) { /* campo deshabilitado */ }
+  }
+}
+
+function recolectar() {
+  var esV2 = (PARAMS.modo === "v2");
+  var out = [];
+  for (var i = 0; i < CARDS.length; i++) {
+    var c = CARDS[i];
+    var num = c.oc.numero_oc;
+    limpiarError(c);
+
+    if (!c.estado) {
+      avisar(esV2
+        ? "Indique el estado de la OC " + num + "."
+        : "Por favor seleccione «¿Recibió conforme?» para la OC " + num + ".", c.radios[0].input, c);
+      return null;
+    }
+
+    var def = c.estadoDef || { fecha: "opt" };
+
+    /* El contrato exige `yyyy-MM-dd` o cadena vacía. Con `type=date` el
+       navegador ya entrega ese formato, pero en un navegador sin soporte el
+       campo se degrada a texto libre y el proveedor puede escribir «22 de
+       agosto». Se valida en vez de mandar basura al otro extremo. */
+    var fecha = c.fecha.disabled ? "" : texto(c.fecha.value, 20);
+    if (fecha && !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      avisar("La fecha de la OC " + num + " debe ir en formato aaaa-mm-dd (por ejemplo " +
+             fechaLocalISO(new Date()) + ").", c.fecha, c);
+      return null;
+    }
+
+    /* Regla legada: con la cuenta bloqueada o sin stock la fecha es opcional.
+       Se mira el TEXTO de las observaciones, no el estado de los chips, para
+       que también valga si el proveedor lo escribió a mano — igual que hoy. */
+    var obsCrudo = c.obs.value;
+    var omitible = !esV2 && SKIP_FECHA_CHIPS.some(function (v) { return obsCrudo.indexOf(v) !== -1; });
+
+    if (def.fecha === "req" && !fecha && !omitible) {
+      avisar(esV2
+        ? "Ingrese la fecha estimada de despacho de la OC " + num + "."
+        : "Por favor ingrese la fecha de despacho para la OC " + num + ".", c.fecha, c);
+      return null;
+    }
+
+    var obs = obsCrudo.trim().substring(0, MAX_OBS);
+
+    if (esV2) {
+      /* v2 lleva `parcial` entre `fecha_entrega` y `observaciones`, y la fecha
+         en blanco es una cadena vacía: el folio ya da la correlación. */
+      out.push({
+        numero_oc:     num,
+        producto:      c.oc.producto,
+        estado:        c.estado,
+        fecha_entrega: fecha,
+        parcial:       !!(c.parcial && c.parcial.checked),
+        observaciones: obs
+      });
+    } else {
+      /* LEGADO — mismas claves, mismo orden y mismos valores que hoy:
+         `estado` es 'confirmado'/'problema' y la fecha en blanco viaja como
+         'Por definir', que es lo que el flujo y Respuestas_OC.xlsx esperan. */
+      out.push({
+        numero_oc:     num,
+        producto:      c.oc.producto,
+        estado:        c.estado,
+        fecha_entrega: fecha || "Por definir",
+        observaciones: obs
+      });
+    }
+  }
+  return out;
+}
+
+function armarPayload(respuestas, fechaRespuesta) {
+  if (PARAMS.modo === "v2") {
+    /* Contrato v2 — el folio `seg` viaja de vuelta en el cuerpo: es la
+       correlación determinista con la solicitud que originó el enlace. */
+    return {
+      v: 2,
+      seg: PARAMS.seg,
+      proveedor: PARAMS.proveedor,
+      respondido_por: texto(document.getElementById("respondido-por").value, 120),
+      fecha_respuesta: fechaRespuesta,
+      respuestas: respuestas
+    };
+  }
+  /* Payload LEGADO — idéntico al que se envía hoy, clave por clave y en el
+     mismo orden. `correo_vendedor` y `telefono_vendedor` conservan su nombre
+     exacto: el flujo los lee así. NO RENOMBRAR. */
+  return {
+    proveedor:               PARAMS.proveedor,
+    correo_proveedor:        PARAMS.correo_proveedor,
+    telefono_vendedor:       PARAMS.telefono_vendedor,
+    correo_vendedor:         PARAMS.correo_vendedor,
+    fecha_respuesta:         fechaRespuesta,
+    correo_proveedor_alerta: PARAMS.correo_proveedor_alerta,
+    numero_vendedor:         PARAMS.numero_vendedor,
+    respuestas:              respuestas
+  };
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   7. ENVÍO
+      Dos intentos, en este orden:
+      A) fetch normal (Content-Type: application/json). Si el trigger responde
+         con cabeceras CORS, sabemos la verdad: 2xx = entregado, 4xx/5xx = no.
+      B) si A es rechazado por la red o por CORS (el preflight bloqueado
+         significa que el POST de A NUNCA salió, así que B no duplica), se
+         reintenta EXACTAMENTE como lo hace hoy la versión en producción:
+         mode:'no-cors' + Content-Type text/plain, que no dispara preflight y
+         sí llega al flujo. La respuesta es opaca: se informa como «enviado,
+         sin confirmación».
+      `fecha_respuesta` se genera UNA sola vez, antes de los dos intentos: si
+      alguna vez llegaran los dos cuerpos, el par (proveedor/seg,
+      fecha_respuesta) los identifica como el mismo envío.
+      LOS DOS intentos llevan tope de tiempo: sin él, una conexión que se
+      queda colgada deja el botón en «Enviando…» para siempre.
+      ───────────────────────────────────────────────────────────────────── */
+
+function postConTope(url, opciones) {
+  var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  var timer = null;
+  var op = {};
+  for (var k in opciones) { if (Object.prototype.hasOwnProperty.call(opciones, k)) { op[k] = opciones[k]; } }
+  op.method = "POST";
+  if (ctrl) {
+    op.signal = ctrl.signal;
+    timer = setTimeout(function () { ctrl.abort(); }, TIMEOUT_ENVIO_MS);
+  }
+  function limpiar(x) { if (timer) { clearTimeout(timer); timer = null; } return x; }
+  return fetch(url, op).then(limpiar, function (e) { limpiar(); throw e; });
+}
+
+function enviarConReintento(url, cuerpo) {
+  if (!url) {
+    return Promise.resolve({ estado: "fallido", detalle: "No hay URL de destino configurada en el formulario." });
+  }
+  if (typeof fetch !== "function") {
+    return Promise.resolve({ estado: "fallido", detalle: "El navegador no soporta fetch." });
+  }
+  try {
+    return postConTope(url, {
+      headers: { "Content-Type": "application/json" },
+      body: cuerpo
+    }).then(function (r) {
+      return r.ok
+        ? { estado: "confirmado", detalle: "HTTP " + r.status }
+        : { estado: "fallido", detalle: "HTTP " + r.status };
+    }).catch(function (e) {
+      console.warn("Intento A (CORS) falló, se reintenta sin preflight:", e);
+      /* Intento B — copia exacta del envío que hoy está en producción. */
+      return postConTope(url, {
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: cuerpo
+      }).then(function () {
+        return { estado: "enviado", detalle: "respuesta opaca (no-cors)" };
+      }).catch(function (e2) {
+        console.error("Intento B (no-cors) falló:", e2);
+        return { estado: "fallido", detalle: String((e2 && e2.message) || e2) };
+      });
+    });
+  } catch (e3) {
+    console.error("No se pudo iniciar el envío:", e3);
+    return Promise.resolve({ estado: "fallido", detalle: String((e3 && e3.message) || e3) });
+  }
+}
+
+function resumenTexto(payload) {
+  var l = [];
+  if (payload.seg) { l.push("Folio: " + payload.seg); }
+  l.push("Proveedor: " + payload.proveedor);
+  payload.respuestas.forEach(function (r) {
+    l.push("OC " + r.numero_oc + " · " + r.estado +
+           (r.fecha_entrega ? " · " + r.fecha_entrega : "") +
+           (r.parcial ? " · respuesta parcial" : "") +
+           (r.observaciones ? " · " + r.observaciones.replace(/\n/g, " / ") : ""));
+  });
+  return l.join("\n");
+}
+
+function finalizar(res, payload) {
+  ocultar("oc-cards-container");
+  ocultar("submit-area");
+  ocultar("mail-box");
+  ocultar("section-title");
+  ocultar("aviso");
+  ocultar("warn-panel");
+  var caja = document.getElementById("success-msg");
+  caja.style.display = "block";
+
+  var nota = document.getElementById("deliv-note");
+  var btn  = document.getElementById("btn-copiar");
+  if (res.estado === "confirmado") {
+    nota.textContent = "Recepción confirmada por nuestro sistema" + (payload.seg ? " · folio " + payload.seg : "") + ".";
+  } else if (res.estado === "enviado") {
+    nota.textContent = "Su respuesta fue enviada. No pudimos leer la confirmación del servidor, pero quedó registrada" +
+                       (payload.seg ? " con el folio " + payload.seg : "") + ".";
+    btn.style.display = "block";
+    btn.onclick = function () { copiar(resumenTexto(payload), btn); };
+  } else {
+    nota.textContent = "No pudimos confirmar la recepción automática. Si no recibe noticias nuestras, responda al correo " +
+                       "que le enviamos" + (payload.seg ? " (asunto con el folio " + payload.seg + ")" : "") +
+                       " y copie ahí su respuesta.";
+    btn.style.display = "block";
+    btn.onclick = function () { copiar(resumenTexto(payload), btn); };
+  }
+  console.log("Estado del envío:", res);
+  window.scrollTo(0, 0);
+  try { caja.focus(); } catch (e) { /* sin foco programático */ }
+}
+
+function copiar(txt, btn) {
+  function ok() { btn.textContent = "✅ Copiado"; setTimeout(function () { btn.textContent = "📋 Copiar mi respuesta"; }, 2500); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(ok).catch(function () { copiarLegado(txt, ok); });
+  } else {
+    copiarLegado(txt, ok);
+  }
+}
+function copiarLegado(txt, ok) {
+  var ta = document.createElement("textarea");
+  ta.value = txt;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); ok(); } catch (e) { alert(txt); }
+  document.body.removeChild(ta);
+}
+
+function enviarRespuestas() {
+  var btn = document.getElementById("btn-enviar");
+  /* Sin PARAMS no hay nada que enviar (panel de error activo o enlace roto):
+     salir antes de tocar el DOM de las tarjetas, que no existe. */
+  if (btn.disabled || !PARAMS) { return; }
+
+  var correo = document.getElementById("respondido-por");
+  if (PARAMS.modo === "v2" && correo.value.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo.value.trim())) {
+    avisar("El correo de contacto no parece válido. Corríjalo o déjelo en blanco.", correo, null);
+    return;
+  }
+
+  var respuestas = recolectar();
+  if (!respuestas) { return; }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Enviando…";
+
+  var payload = armarPayload(respuestas, new Date().toISOString());
+  var destino = (PARAMS.modo === "v2") ? URL_SEGUIMIENTO : POWER_AUTOMATE_URL;
+  var cuerpo  = JSON.stringify(payload);
+
+  console.log("Modo:", PARAMS.modo, "· destino:", destino || "(sin configurar)");
+  console.log("Payload a enviar:", JSON.stringify(payload, null, 2));
+
+  enviarConReintento(destino, cuerpo).then(function (res) {
+    /* La pantalla de éxito se muestra siempre: un proveedor que respondió no
+       tiene por qué ver un error de red nuestro. Pero el pie dice la verdad
+       sobre si la recepción quedó confirmada, y ofrece copiar la respuesta
+       cuando no lo está. */
+    finalizar(res, payload);
+  }).catch(function (e) {
+    /* Red de seguridad: `enviarConReintento` no debería rechazar nunca, pero
+       si lo hiciera el botón quedaría bloqueado en «Enviando…» sin salida. */
+    console.error("Fallo inesperado al enviar:", e);
+    finalizar({ estado: "fallido", detalle: String((e && e.message) || e) }, payload);
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   8. INICIALIZACIÓN
+      ───────────────────────────────────────────────────────────────────── */
+
+var PARAMS = null;
+var HASH_RENDERIZADO = null;
+
+(function iniciar() {
+  document.getElementById("btn-enviar").addEventListener("click", enviarRespuestas);
+
+  /* Si solo cambia el fragmento, el navegador NO recarga el documento: la
+     página se quedaría mostrando las órdenes del enlace anterior (o el panel
+     de error) mientras la URL ya dice otra cosa. Pasa cuando el proveedor
+     tiene la pestaña abierta y abre un segundo enlace, o al usar atrás y
+     adelante entre dos correos. Se recarga a mano. */
+  window.addEventListener("hashchange", function () {
+    var actual = window.location.hash ? window.location.hash.substring(1) : "";
+    if (actual !== HASH_RENDERIZADO) { window.location.reload(); }
+  });
+
+  HASH_RENDERIZADO = window.location.hash ? window.location.hash.substring(1) : "";
+  var lectura = leerPayload();
+
+  if (lectura.origen === "error") {
+    mostrarError("No pudimos leer este enlace",
+      "El enlace llegó incompleto o modificado. Por favor responda directamente al correo que le enviamos: " +
+      "su respuesta se registra igual.");
+    return;
+  }
+  if (lectura.origen === "sin-hash") {
+    mostrarError("Falta la información del enlace",
+      "Este formulario se abre desde el enlace del correo de Maryun. Al abrirlo directamente no hay órdenes que " +
+      "mostrar. Vuelva al correo y haga clic en el botón, o responda al correo.");
+    return;
+  }
+
+  PARAMS = normalizar(lectura.data);
+
+  if (PARAMS.ordenes.length === 0) {
+    mostrarError("El enlace no trae órdenes de compra",
+      (PARAMS.omitidas > 0
+        ? "El enlace traía " + PARAMS.omitidas + " línea(s) sin número de OC, que no podemos mostrar. "
+        : "Es posible que el cliente de correo lo haya cortado. ") +
+      "Responda al correo que le enviamos indicando el estado de sus órdenes: su respuesta se registra igual.");
+    PARAMS = null;
+    return;
+  }
+
+  if (lectura.origen === "demo") {
+    console.warn("Modo demostración: sin hash en la URL y entorno de prueba.");
+    document.getElementById("demo-bar").style.display = "block";
+  }
+
+  renderHeader(PARAMS);
+  renderCards(PARAMS);
+})();
 </script>
 </body>
 </html>
