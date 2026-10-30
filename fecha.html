@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fecha de despacho – Maryun</title>
+<style>
+  :root { --azul: #1b3a8c; --azul-osc: #122a66; --gris: #5b6472; --borde: #d7dbe2; --fondo: #f3f5f8; --ok: #1a7a3f; --rojo: #c0392b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: #1c2430; font: 16px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .caja { max-width: 560px; margin: 32px auto; background: #fff; border: 1px solid var(--borde); border-radius: 12px; padding: 28px 24px; }
+  .marca { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .marca .m { background: var(--azul); color: #fff; font-weight: 800; border-radius: 6px; padding: 4px 8px; letter-spacing: .5px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  .sub { color: var(--gris); margin: 0 0 20px; }
+  .dato { background: var(--fondo); border-radius: 8px; padding: 12px 14px; margin-bottom: 18px; }
+  .dato b { color: var(--azul-osc); }
+  label { display: block; font-weight: 600; margin: 14px 0 6px; }
+  input[type="date"], textarea, input[type="text"] { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--borde); border-radius: 8px; background: #fff; }
+  input:focus, textarea:focus { outline: 2px solid var(--azul); outline-offset: 1px; }
+  textarea { min-height: 72px; resize: vertical; }
+  .btn { display: inline-block; width: 100%; text-align: center; font: inherit; font-weight: 700; padding: 13px 16px; border-radius: 9px; border: 0; cursor: pointer; margin-top: 18px; }
+  .btn-env { background: var(--azul); color: #fff; }
+  .btn-env:disabled { background: #a9b3c6; cursor: not-allowed; }
+  .btn-copy { background: #fff; color: var(--azul); border: 1px solid var(--azul); margin-top: 10px; }
+  .nota { color: var(--gris); font-size: 14px; margin-top: 14px; }
+  .error { color: var(--rojo); font-weight: 600; }
+  .ok { color: var(--ok); font-weight: 600; }
+  pre { white-space: pre-wrap; background: var(--fondo); border-radius: 8px; padding: 12px; font: 14px/1.4 Consolas, monospace; }
+  .oculto { display: none; }
+</style>
+</head>
+<body>
+<div class="caja">
+  <div class="marca"><span class="m">MARYUN</span><span>Compras y Logística</span></div>
+  <h1>Fecha estimada de despacho</h1>
+  <p class="sub">Gracias por confirmar la recepción de nuestra orden. Indique la fecha en que estiman despacharla.</p>
+
+  <div id="panel-error" class="oculto">
+    <p class="error">No pudimos leer los datos de la orden desde el enlace.</p>
+    <p class="nota">Puede responder directamente al correo de la orden de compra indicando la fecha estimada de despacho.</p>
+  </div>
+
+  <div id="panel-form" class="oculto">
+    <div class="dato">Orden de Compra <b id="d-oc"></b><span id="d-prov-wrap"> · <span id="d-prov"></span></span></div>
+    <label for="fecha">Fecha estimada de despacho</label>
+    <input type="date" id="fecha" required>
+    <label for="obs">Observaciones (opcional)</label>
+    <textarea id="obs" placeholder="Por ejemplo: despacho parcial, productos sin stock, cambio de precio…"></textarea>
+    <button class="btn btn-env" id="btn-enviar" type="button" disabled>Enviar respuesta por correo</button>
+    <p class="nota">Al pulsar se abre su programa de correo con la respuesta ya escrita; solo debe enviarla. Si no se abre, use «Copiar mi respuesta» y péguela respondiendo al correo de la orden.</p>
+    <button class="btn btn-copy" id="btn-copiar" type="button">Copiar mi respuesta</button>
+    <p id="estado" class="nota"></p>
+    <pre id="vista" class="oculto"></pre>
+  </div>
+</div>
+<script>
+/* Lee el payload del enlace (#base64url de un JSON {oc, prov, para, asunto}).
+   La página NO envía nada a ningún servidor: solo arma un correo (mailto:) o un
+   texto para copiar. Lo que el proveedor escribe sale desde SU propio correo. */
+function decodificarBase64Utf8(b64) {
+  var s = String(b64).replace(/\s+/g, "");
+  if (/%[0-9A-Fa-f]{2}/.test(s)) { try { s = decodeURIComponent(s); } catch (e) {} }
+  s = s.replace(/-/g, "+").replace(/_/g, "/").replace(/=+$/, "");
+  if (s.length % 4 === 1) { throw new Error("base64 inválido"); }
+  while (s.length % 4 !== 0) { s += "="; }
+  var bin = atob(s), bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) { bytes[i] = bin.charCodeAt(i); }
+  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+}
+function texto(id) { return document.getElementById(id); }
+function mostrar(id) { texto(id).classList.remove("oculto"); }
+function fechaCL(iso) { var p = iso.split("-"); return p[2] + "-" + p[1] + "-" + p[0]; }
+function limpiar(s, max) { return String(s || "").replace(/[\r\n]+/g, " ").replace(/[<>]/g, "").slice(0, max); }
+
+var datos = null;
+try {
+  var h = location.hash ? location.hash.substring(1) : "";
+  if (!h) { throw new Error("sin hash"); }
+  var obj = JSON.parse(decodificarBase64Utf8(h));
+  var oc = parseInt(obj.oc, 10);
+  if (!(oc > 0)) { throw new Error("oc inválida"); }
+  var para = String(obj.para || "");
+  if (!/^[^@\s<>]+@maryun\.cl$/i.test(para)) { throw new Error("destino inválido"); }
+  datos = { oc: oc, prov: limpiar(obj.prov, 60), para: para,
+            asunto: limpiar(obj.asunto, 120) || ("Orden de Compra N° " + oc + " — Maryun") };
+} catch (e) { datos = null; }
+
+if (!datos) {
+  mostrar("panel-error");
+} else {
+  mostrar("panel-form");
+  texto("d-oc").textContent = "N° " + datos.oc;
+  if (datos.prov) { texto("d-prov").textContent = datos.prov; } else { texto("d-prov-wrap").classList.add("oculto"); }
+  var f = texto("fecha"), hoy = new Date();
+  f.min = hoy.toISOString().slice(0, 10);
+  f.addEventListener("input", function () { texto("btn-enviar").disabled = !f.value; });
+
+  function cuerpo() {
+    var lineas = ["Orden de Compra N° " + datos.oc,
+                  "Fecha estimada de despacho: " + fechaCL(f.value)];
+    var o = texto("obs").value.trim();
+    if (o) { lineas.push("Observaciones: " + o.slice(0, 1500)); }
+    lineas.push("", "(respuesta enviada desde el enlace del correo de la orden)");
+    return lineas.join("\n");
+  }
+  texto("btn-enviar").addEventListener("click", function () {
+    if (!f.value) { return; }
+    var url = "mailto:" + encodeURIComponent(datos.para) +
+              "?subject=" + encodeURIComponent("RE: " + datos.asunto) +
+              "&body=" + encodeURIComponent(cuerpo());
+    texto("estado").textContent = "Se abrió su programa de correo con la respuesta. Si no ocurrió, use «Copiar mi respuesta».";
+    location.href = url;
+  });
+  texto("btn-copiar").addEventListener("click", function () {
+    if (!f.value) { texto("estado").textContent = "Primero elija la fecha."; return; }
+    var t = cuerpo();
+    texto("vista").textContent = t; mostrar("vista");
+    var ok = function () { texto("estado").innerHTML = '<span class="ok">Copiado.</span> Péguelo respondiendo al correo «' + datos.asunto + '».'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, function () { texto("estado").textContent = "Copie el texto de abajo y respóndalo al correo de la orden."; }); }
+    else { texto("estado").textContent = "Copie el texto de abajo y respóndalo al correo de la orden."; }
+  });
+}
+</script>
+</body>
+</html>
